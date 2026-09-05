@@ -1,3 +1,9 @@
+// Arma un string de nombres separados por comas, tal como en el diseño de la pantalla 1.
+// Ej: ["Ailen","Carlos","Laura"] -> "Ailen, Carlos, Laura"
+function formatNamesCommaOnly(names) {
+  return names.join(", ");
+}
+
 // Arma un string de nombres separados por comas, con "y" antes del último.
 // Ej: ["Ailen","Carlos","Laura"] -> "Ailen, Carlos y Laura"
 function formatNamesWithY(names) {
@@ -11,6 +17,19 @@ function formatNamesWithY(names) {
 // Ej: ["Ailen","Carlos","Laura"] -> "Ailen | Carlos | Laura"
 function formatNamesWithPipe(names) {
   return names.join(" | ");
+}
+
+// Reduce el tamaño de fuente hasta que el texto entre en una sola línea
+// dentro del ancho de su contenedor. Necesario porque la cantidad de
+// invitados por grupo varía (de 1 a 5 nombres) y el diseño está pensado
+// para un texto de ejemplo de longitud fija.
+function fitTextToOneLine(el, minFontPx) {
+  let fontSize = parseFloat(window.getComputedStyle(el).fontSize);
+  const maxWidth = el.clientWidth;
+  while (el.scrollWidth > maxWidth && fontSize > minFontPx) {
+    fontSize -= 2;
+    el.style.fontSize = fontSize + "px";
+  }
 }
 
 function getGuestSlugFromUrl() {
@@ -61,6 +80,26 @@ function openEnvelope() {
   }, 600);
 }
 
+// Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de
+// ancho fijo) y lo escala uniformemente para que ocupe el ancho del dispositivo,
+// igual que si fuera una imagen. Así el layout queda pixel-perfect en cualquier
+// tamaño de pantalla.
+function scaleFrame(scaler) {
+  const frame = scaler.querySelector(".frame");
+  const frameWidth = parseFloat(scaler.dataset.frameWidth);
+  const frameHeight = parseFloat(scaler.dataset.frameHeight);
+  const scale = scaler.clientWidth / frameWidth;
+
+  frame.style.width = frameWidth + "px";
+  frame.style.height = frameHeight + "px";
+  frame.style.transform = "scale(" + scale + ")";
+  scaler.style.height = frameHeight * scale + "px";
+}
+
+function scaleAllFrames() {
+  document.querySelectorAll(".frame-scaler").forEach(scaleFrame);
+}
+
 function init() {
   const slug = getGuestSlugFromUrl();
   const group = slug ? findGuestGroup(slug) : null;
@@ -70,10 +109,16 @@ function init() {
     return;
   }
 
-  document.getElementById("guest-names-envelope").textContent = formatNamesWithY(group.names);
+  const envelopeNamesEl = document.getElementById("guest-names-envelope");
+  envelopeNamesEl.textContent = formatNamesCommaOnly(group.names);
+
   document.getElementById("guest-names-invitation").textContent = formatNamesWithPipe(group.names);
 
   renderEventDetails();
+
+  scaleAllFrames();
+  fitTextToOneLine(envelopeNamesEl, 56);
+  window.addEventListener("resize", scaleAllFrames);
 
   const envelope = document.getElementById("envelope");
   envelope.addEventListener("click", openEnvelope);
