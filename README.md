@@ -26,6 +26,12 @@ y un array `names` con los nombres:
 
 El link para ese grupo queda: `https://tu-sitio.github.io/XV-Matilda/?g=martin-lucas-andrea`
 
+Ya están cargados los 72 grupos del Excel `INVITACIONES_MATILDA.xlsx` (26 familias + 46 amigos/as).
+Quedan pendientes de revisar en `js/guests.js`:
+
+- Los apodos temporales `more`, `ali`, `lo`, `sofi`, `lua`, `amb` — falta reemplazarlos por los nombres completos reales.
+- `ciro` / `ciro-2` y `ori` / `ori-2` son personas distintas con el mismo nombre de pila; si hace falta distinguirlos en pantalla, agregarles apellido o inicial.
+
 ## Cómo completar los datos del evento
 
 Editá `js/config.js`: fecha, hora, lugar, dirección, dress code y el link real del Google Forms de
@@ -40,7 +46,7 @@ algunos navegadores; en este caso alcanza con abrir el archivo directo o con un 
 python3 -m http.server 8000
 ```
 
-Después entrá a `http://localhost:8000/?g=ailen-carlos-laura`.
+Después entrá a `http://localhost:8000/?g=carlos-laura-ailen`.
 
 ## Publicar en GitHub Pages
 
