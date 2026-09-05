@@ -64,20 +64,70 @@ function showNotFound() {
     "</div>";
 }
 
+// Crea pétalos que caen suavemente sobre la pantalla de la invitación,
+// como un pequeño festejo al abrirse el sobre.
+function spawnPetals(count) {
+  const layer = document.getElementById("petal-layer");
+  for (let i = 0; i < count; i++) {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    const left = Math.random() * 100;
+    const duration = 2.6 + Math.random() * 1.8;
+    const delay = Math.random() * 0.5;
+    const drift = (Math.random() - 0.5) * 160;
+    const size = 10 + Math.random() * 8;
+
+    petal.style.left = left + "vw";
+    petal.style.width = size + "px";
+    petal.style.height = size + "px";
+    petal.style.animationDuration = duration + "s";
+    petal.style.animationDelay = delay + "s";
+    petal.style.setProperty("--drift", drift + "px");
+
+    layer.appendChild(petal);
+    window.setTimeout(function () {
+      petal.remove();
+    }, (duration + delay) * 1000 + 200);
+  }
+}
+
+let envelopeOpened = false;
+
 function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+
   const envelopeScreen = document.getElementById("screen-envelope");
+  const envelopeFrame = document.getElementById("envelope-frame");
   const invitationScreen = document.getElementById("screen-invitation");
+  const sealGlow = document.getElementById("seal-glow");
+  const flashBurst = document.getElementById("flash-burst");
 
-  envelopeScreen.classList.add("opening");
+  // 1. El sello brilla y el sobre empieza a alejarse.
+  sealGlow.classList.add("pulse");
+  envelopeFrame.classList.add("opening");
 
+  // 2. Un destello cálido cubre la pantalla justo cuando termina de irse el sobre.
+  window.setTimeout(function () {
+    flashBurst.classList.add("active");
+  }, 150);
+
+  // 3. En el pico del destello, cambiamos de pantalla (queda oculto por la luz).
   window.setTimeout(function () {
     envelopeScreen.classList.remove("active");
     envelopeScreen.classList.add("hidden");
+
     invitationScreen.classList.remove("hidden");
-    // Forzamos reflow para que la transición de opacidad se dispare.
     void invitationScreen.offsetWidth;
-    invitationScreen.classList.add("active");
-  }, 600);
+    invitationScreen.classList.add("active", "entering");
+
+    spawnPetals(16);
+  }, 470);
+
+  // 4. Limpieza de las clases de animación una vez que terminaron.
+  window.setTimeout(function () {
+    flashBurst.classList.remove("active");
+  }, 1100);
 }
 
 // Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de

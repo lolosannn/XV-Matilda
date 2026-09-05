@@ -148,14 +148,174 @@ body {
   color: var(--ink);
 }
 
-#screen-envelope.opening .envelope-img {
+/* ---------- Transición pantalla 1 → pantalla 2 ---------- */
+
+.seal-glow {
+  left: 50%;
+  top: 1433px;
+  width: 260px;
+  height: 260px;
+  transform: translate(-50%, 0) scale(0);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 248, 230, 0.95) 0%,
+    rgba(230, 195, 130, 0.55) 45%,
+    rgba(230, 195, 130, 0) 72%
+  );
   opacity: 0;
-  transform: translateX(-50%) scale(0.92);
+  pointer-events: none;
 }
 
-#screen-envelope.opening {
+.seal-glow.pulse {
+  animation: sealPulse 0.6s ease-out forwards;
+}
+
+@keyframes sealPulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.3);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(1.7);
+  }
+}
+
+#envelope-frame.opening .envelope-img {
+  animation: envelopeAway 0.65s cubic-bezier(0.55, 0, 0.4, 1) forwards;
+}
+
+@keyframes envelopeAway {
+  0% {
+    transform: translateX(-50%) scale(1) rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(-50%) scale(1.08) rotate(-2deg) translateY(-10px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.75) rotate(5deg) translateY(60px);
+    opacity: 0;
+  }
+}
+
+#envelope-frame.opening .crown-logo,
+#envelope-frame.opening .eyebrow,
+#envelope-frame.opening .script-names,
+#envelope-frame.opening .divider-vector,
+#envelope-frame.opening .hint {
+  animation: fadeUpOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeUpOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-24px);
+  }
+}
+/* Elementos sin translateX(-50%) en su posición base (crown-logo no lo usa) */
+#envelope-frame.opening .crown-logo {
+  animation-name: fadeUpOutPlain;
+}
+
+@keyframes fadeUpOutPlain {
+  to {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
+.flash-burst {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 250, 235, 1) 0%,
+    rgba(240, 214, 165, 0.9) 40%,
+    rgba(240, 214, 165, 0) 75%
+  );
+  pointer-events: none;
+  z-index: 1000;
   opacity: 0;
-  transition: opacity 0.4s ease 0.35s;
+  transform: scale(0);
+}
+
+.flash-burst.active {
+  animation: flashBurst 0.9s ease-out forwards;
+}
+
+@keyframes flashBurst {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(34);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(65);
+  }
+}
+
+#screen-invitation.entering .screen-invitation-inner {
+  animation: screenZoomIn 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes screenZoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.petal-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -30px;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  border-radius: 0 60% 0 60%;
+  opacity: 0.9;
+  animation: petalFall linear forwards;
+}
+
+@keyframes petalFall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 40px)) rotate(320deg);
+    opacity: 0;
+  }
 }
 
 /* ---------- Pantalla 2: invitación (placeholder, pendiente de assets reales) ---------- */
