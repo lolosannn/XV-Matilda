@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis XV - Matilda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Pantalla 1: sobre cerrado -->
+    <section id="screen-envelope" class="screen active">
+      <div class="crown">&#10086;</div>
+      <h2 class="eyebrow">Invitación para:</h2>
+      <h1 id="guest-names-envelope" class="script-names">&nbsp;</h1>
+      <div class="divider"><span></span><i>&#9670;</i><span></span></div>
+
+      <div id="envelope" class="envelope" tabindex="0" role="button" aria-label="Abrir invitación">
+        <div class="envelope-back"></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">M</div>
+      </div>
+      <p class="hint">toca para abrir</p>
+    </section>
+
+    <!-- Pantalla 2: invitación con detalles del evento -->
+    <section id="screen-invitation" class="screen hidden">
+      <div class="card">
+        <p class="quote">Hay momentos que merecen<br />convertirse en recuerdos.</p>
+        <p class="quote-italic">Queremos que seas parte de uno de ellos.</p>
+
+        <div class="logo">
+          <span class="logo-script">Matilda</span>
+          <span class="logo-sub">mis <strong>XV</strong></span>
+        </div>
+
+        <div class="photo-frame">
+          <img id="event-photo" src="" alt="Matilda" />
+        </div>
+
+        <h2 id="guest-names-invitation" class="script-names small">&nbsp;</h2>
+
+        <div class="divider"><span></span><i>&#10086;</i><span></span></div>
+
+        <p class="callout">
+          Estás invitado a celebrar<br />los XV años de <span id="celebrant-name">Matilda</span>.
+        </p>
+
+        <div class="divider"><span></span><i>&#10086;</i><span></span></div>
+
+        <div class="event-details">
+          <p><strong>Fecha:</strong> <span id="event-date"></span></p>
+          <p><strong>Hora:</strong> <span id="event-time"></span></p>
+          <p><strong>Lugar:</strong> <span id="event-venue-name"></span></p>
+          <p class="venue-address"><span id="event-venue-address"></span></p>
+          <p><strong>Código de vestimenta:</strong> <span id="event-dress-code"></span></p>
+        </div>
+
+        <a id="rsvp-link" class="rsvp-button" href="#" target="_blank" rel="noopener">
+          Confirmar asistencia
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/guests.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
