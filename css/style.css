@@ -48,6 +48,17 @@ body {
   overflow: hidden;
 }
 
+/* Variante que no scrollea: queda fija en pantalla, alineada con el
+   contenido que sí scrollea gracias a --align-top calculado en JS. */
+.frame-scaler--fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 20;
+}
+
 .frame {
   position: absolute;
   top: 0;
@@ -318,150 +329,141 @@ body {
   }
 }
 
-/* ---------- Pantalla 2: invitación (placeholder, pendiente de assets reales) ---------- */
+/* ---------- Pantalla 2: invitación ---------- */
 
-.card {
-  width: min(420px, 100%);
-  margin: 0 auto;
-  background: var(--bg-card);
-  border-radius: 18px;
-  padding: 32px 24px 40px;
-  box-shadow: 0 10px 30px rgba(90, 70, 50, 0.12);
+#invitation-frame {
+  width: 1920px;
+  height: 2830px;
 }
 
-.screen-invitation-inner {
-  padding: 48px 24px 64px;
+.s2-ribbon {
+  left: -50px;
+  top: -10px;
+  width: 380px;
 }
 
-.quote {
-  font-size: 18px;
-  margin: 0 0 8px;
-  color: var(--ink);
-  text-align: center;
+.s2-flower {
+  left: 1660px;
+  top: 50px;
+  width: 150px;
 }
 
-.quote-italic {
-  font-style: italic;
-  font-size: 15px;
-  color: var(--ink-soft);
-  margin: 0 0 24px;
-  text-align: center;
+.s2-card {
+  left: 50%;
+  top: 315px;
+  width: 1391px;
+  transform: translateX(-50%);
+  border-radius: 48px 48px 0 0;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(90, 70, 50, 0.18);
 }
 
-.invitation-names {
-  font-family: "Yellowtail", cursive;
-  font-size: 30px;
-  color: var(--ink);
-  text-align: center;
-  margin: 8px 0 16px;
-  font-weight: 400;
-}
-
-.logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.logo-script {
-  font-family: "Yellowtail", cursive;
-  font-size: 46px;
-  color: var(--gold);
-  line-height: 1;
-}
-
-.logo-sub {
-  font-family: "Libre Baskerville", serif;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  font-size: 14px;
-  color: var(--ink);
-}
-
-.photo-frame {
-  width: 200px;
-  max-width: 70%;
-  margin: 0 auto 24px;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid var(--border);
-  box-shadow: 0 6px 14px rgba(90, 70, 50, 0.15);
-}
-
-.photo-frame img {
+.s2-card-bg {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  background: #e6dcc4;
+  height: auto;
 }
 
-.callout {
-  font-style: italic;
-  font-size: 16px;
-  line-height: 1.6;
-  margin: 0 0 8px;
+.s2-quote {
+  left: 50%;
+  top: 239px;
+  width: 940px;
+  transform: translateX(-50%);
+  margin: 0;
   text-align: center;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 220px;
-  max-width: 80%;
-  margin: 0 auto 32px;
-  color: var(--gold);
-}
-
-.divider span {
-  flex: 1;
-  height: 1px;
-  background: var(--gold-soft);
-}
-
-.divider i {
-  font-style: normal;
-  font-size: 10px;
-}
-
-.event-details {
-  text-align: center;
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 28px;
-}
-
-.event-details p {
-  margin: 4px 0;
-}
-
-.venue-address {
-  color: var(--ink-soft);
-  font-size: 14px;
-}
-
-.rsvp-button {
-  display: block;
-  width: fit-content;
-  margin: 0 auto;
-  padding: 14px 32px;
-  background: var(--gold);
-  color: #fff8ea;
-  text-decoration: none;
-  border-radius: 999px;
   font-family: "Libre Baskerville", serif;
-  letter-spacing: 1px;
-  font-size: 15px;
-  box-shadow: 0 8px 18px rgba(169, 130, 44, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: 32px;
+  line-height: 1.45;
+  color: var(--ink);
 }
 
-.rsvp-button:hover,
-.rsvp-button:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(169, 130, 44, 0.45);
+.s2-quote em {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 27px;
+  color: var(--ink-soft);
+}
+
+.s2-divider-1 {
+  left: 50%;
+  top: 457px;
+  width: 368px;
+  transform: translateX(-50%);
+}
+
+.s2-logo {
+  left: 50%;
+  top: 500px;
+  width: 480px;
+  transform: translateX(-50%);
+}
+
+.s2-photo {
+  left: 50%;
+  top: 1000px;
+  width: 620px;
+  transform: translateX(-50%) rotate(-3deg);
+  box-shadow: 0 12px 28px rgba(60, 45, 30, 0.25);
+}
+
+.s2-names {
+  left: 50%;
+  top: 1500px;
+  width: 1150px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-size: 56px;
+  color: var(--ink);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.s2-names .name-sep {
+  display: inline-block;
+  width: 1px;
+  height: 0.75em;
+  margin: 0 22px;
+  vertical-align: -0.1em;
+  background: var(--ink);
+  opacity: 0.55;
+}
+
+.s2-divider-2 {
+  left: 50%;
+  top: 1650px;
+  width: 527px;
+  transform: translateX(-50%);
+}
+
+.s2-callout {
+  left: 50%;
+  top: 1760px;
+  width: 940px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: 34px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.s2-divider-3 {
+  left: 50%;
+  top: 1930px;
+  width: 527px;
+  transform: translateX(-50%);
+}
+
+.lace-fixed {
+  left: 50%;
+  top: 0;
+  width: 1407px;
+  transform: translateX(-50%);
 }
 
 .not-found {

@@ -13,10 +13,18 @@ function formatNamesWithY(names) {
   return names.slice(0, -1).join(", ") + " y " + names[names.length - 1];
 }
 
-// Arma un string de nombres separados por "|", como en la invitación.
-// Ej: ["Ailen","Carlos","Laura"] -> "Ailen | Carlos | Laura"
-function formatNamesWithPipe(names) {
-  return names.join(" | ");
+// Escribe los nombres en el elemento de la pantalla 2 separados por una
+// líneita vertical (no texto "|") entre cada uno.
+function renderPipedNames(el, names) {
+  el.textContent = "";
+  names.forEach(function (name, index) {
+    if (index > 0) {
+      const sep = document.createElement("span");
+      sep.className = "name-sep";
+      el.appendChild(sep);
+    }
+    el.appendChild(document.createTextNode(name));
+  });
 }
 
 // Reduce el tamaño de fuente hasta que el texto entre en una sola línea
@@ -41,19 +49,10 @@ function findGuestGroup(slug) {
   return GUEST_GROUPS.find((group) => group.slug === slug) || null;
 }
 
+// PENDIENTE: cuando se agregue la sección de fecha/hora/lugar, dresscode,
+// cuenta regresiva y RSVP, completar acá el resto de EVENT_CONFIG.
 function renderEventDetails() {
-  document.getElementById("event-date").textContent = EVENT_CONFIG.date;
-  document.getElementById("event-time").textContent = EVENT_CONFIG.time;
-  document.getElementById("event-venue-name").textContent = EVENT_CONFIG.venueName;
-  document.getElementById("event-venue-address").textContent = EVENT_CONFIG.venueAddress;
-  document.getElementById("event-dress-code").textContent = EVENT_CONFIG.dressCode;
   document.getElementById("celebrant-name").textContent = EVENT_CONFIG.celebrantName;
-
-  const rsvpLink = document.getElementById("rsvp-link");
-  rsvpLink.href = EVENT_CONFIG.rsvpFormUrl;
-
-  const photo = document.getElementById("event-photo");
-  photo.src = EVENT_CONFIG.photoSrc;
 }
 
 function showNotFound() {
@@ -118,6 +117,9 @@ function openEnvelope() {
     envelopeScreen.classList.add("hidden");
 
     invitationScreen.classList.remove("hidden");
+    // Recién ahora es visible, así que recién ahora se puede medir su ancho
+    // real para escalar sus frames (antes, oculta, medía 0).
+    scaleAllFrames();
     void invitationScreen.offsetWidth;
     invitationScreen.classList.add("active", "entering");
 
@@ -143,7 +145,15 @@ function scaleFrame(scaler) {
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
   frame.style.transform = "scale(" + scale + ")";
-  scaler.style.height = frameHeight * scale + "px";
+
+  if (scaler.classList.contains("frame-scaler--fixed")) {
+    // No scrollea: solo la alineamos verticalmente con el punto del
+    // contenido scrolleable al que debe "pegarse" (dataset.alignTop).
+    const alignTop = parseFloat(scaler.dataset.alignTop || "0");
+    scaler.style.top = alignTop * scale + "px";
+  } else {
+    scaler.style.height = frameHeight * scale + "px";
+  }
 }
 
 function scaleAllFrames() {
@@ -162,12 +172,14 @@ function init() {
   const envelopeNamesEl = document.getElementById("guest-names-envelope");
   envelopeNamesEl.textContent = formatNamesCommaOnly(group.names);
 
-  document.getElementById("guest-names-invitation").textContent = formatNamesWithPipe(group.names);
+  const invitationNamesEl = document.getElementById("guest-names-invitation");
+  renderPipedNames(invitationNamesEl, group.names);
 
   renderEventDetails();
 
   scaleAllFrames();
   fitTextToOneLine(envelopeNamesEl, 56);
+  fitTextToOneLine(invitationNamesEl, 26);
   window.addEventListener("resize", scaleAllFrames);
 
   const envelope = document.getElementById("envelope");
