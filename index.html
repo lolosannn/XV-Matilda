@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=9" />
+  <link rel="stylesheet" href="css/style.css?v=10" />
 </head>
 <body>
   <div id="app">
@@ -48,8 +48,8 @@
     <div class="petal-layer" id="petal-layer"></div>
 
     <!-- Pantalla 2: invitación con detalles del evento -->
-    <!-- PENDIENTE: seguir armando debajo del mapa (dresscode, cuenta
-         regresiva, RSVP) en cuanto lleguen esas imágenes -->
+    <!-- PENDIENTE: seguir armando debajo del dresscode (cuenta regresiva,
+         RSVP) en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
       <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
            que estés en la pantalla 2 (no se suelta ni scrollea), para que
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="4830">
+      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="5230">
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
 
@@ -124,14 +124,16 @@
             <img class="abs s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
 
             <img class="abs s2-map-divider-bottom" src="images/screen2-map-divider-bottom.png" alt="" />
+
+            <img class="abs s2-dresscode" src="images/dresscode.png" alt="Dresscode: elegante. Colores prohibidos: verde, champagne, blanco." />
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="js/guests.js?v=9"></script>
-  <script src="js/config.js?v=9"></script>
-  <script src="js/main.js?v=9"></script>
+  <script src="js/guests.js?v=10"></script>
+  <script src="js/config.js?v=10"></script>
+  <script src="js/main.js?v=10"></script>
 </body>
 </html>

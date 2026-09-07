@@ -560,7 +560,7 @@ body {
 .s2-map-spacer {
   display: block;
   width: 100%;
-  height: 986px;
+  height: 1384px;
 }
 
 .s2-map-divider-top {
@@ -581,6 +581,16 @@ body {
   left: 50%;
   top: 4284px;
   width: 809px;
+  transform: translateX(-50%);
+}
+
+/* ---------- Pantalla 2: dresscode ---------- */
+/* PNG único con todo el contenido armado (texto + ilustraciones), tal
+   cual lo subieron: se coloca sin agregar nada más encima. */
+.s2-dresscode {
+  left: 50%;
+  top: 4492px;
+  width: 1184px;
   transform: translateX(-50%);
 }
 
