@@ -50,16 +50,12 @@ body {
 
 /* Variante que no scrollea: queda pegada abajo de la pantalla todo el
    tiempo (no se suelta ni se apaga), mientras el resto del contenido
-   scrollea por detrás. Con un ancho tope (no crece más allá de eso en
-   pantallas anchas de escritorio) para que quede como un adorno de
-   esquina compacto y nunca tape texto, en vez de agrandarse hasta
-   ocupar media pantalla. */
+   scrollea por detrás. Escala con el ancho de la pantalla igual que el
+   resto del diseño (misma proporción que la tarjeta). */
 .frame-scaler--fixed {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  max-width: 560px;
-  transform: translateX(-50%);
+  left: 0;
   overflow: visible;
   pointer-events: none;
   z-index: 20;
