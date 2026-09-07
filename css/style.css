@@ -594,6 +594,77 @@ body {
   transform: translateX(-50%);
 }
 
+/* ---------- Pantalla 2: cuenta regresiva ---------- */
+.s2-countdown-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.s2-countdown-overlay {
+  left: 50%;
+  top: 5041px;
+  width: 831px;
+  transform: translateX(-50%);
+}
+
+.s2-countdown-numbers {
+  left: 50%;
+  top: 5150px;
+  width: 831px;
+  height: 90px;
+  transform: translateX(-50%);
+}
+
+.s2-countdown-num {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Yellowtail", cursive;
+  font-size: 64px;
+  color: #fff;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.s2-countdown-num--days {
+  left: 15.64%;
+}
+
+.s2-countdown-num--hours {
+  left: 38.51%;
+}
+
+.s2-countdown-num--minutes {
+  left: 61.25%;
+}
+
+.s2-countdown-num--seconds {
+  left: 84%;
+}
+
+.s2-countdown-colon {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  font-family: "Yellowtail", cursive;
+  font-size: 64px;
+  color: #fff;
+  font-weight: 400;
+}
+
+.s2-countdown-colon--1 {
+  left: 27.07%;
+}
+
+.s2-countdown-colon--2 {
+  left: 49.88%;
+}
+
+.s2-countdown-colon--3 {
+  left: 72.62%;
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;

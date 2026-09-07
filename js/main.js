@@ -49,14 +49,38 @@ function findGuestGroup(slug) {
   return GUEST_GROUPS.find((group) => group.slug === slug) || null;
 }
 
-// PENDIENTE: cuando se agregue la sección de mapa, dresscode, cuenta
-// regresiva y RSVP, completar acá el resto de EVENT_CONFIG.
+// PENDIENTE: cuando se agregue la sección de RSVP, completar acá el
+// resto de EVENT_CONFIG.
 function renderEventDetails() {
   document.getElementById("celebrant-name").textContent = EVENT_CONFIG.celebrantName;
   document.getElementById("event-date").textContent = EVENT_CONFIG.date;
   document.getElementById("event-time").textContent = EVENT_CONFIG.time;
   document.getElementById("event-venue").textContent = EVENT_CONFIG.venueName;
   document.getElementById("event-address").textContent = EVENT_CONFIG.venueAddress;
+}
+
+function pad2(n) {
+  return String(n).padStart(2, "0");
+}
+
+// Cuenta regresiva en vivo hasta EVENT_CONFIG.countdownTarget, se
+// actualiza segundo a segundo. Si el evento ya pasó, queda en cero.
+function updateCountdown() {
+  const daysEl = document.getElementById("countdown-days");
+  if (!daysEl) return;
+
+  const target = new Date(EVENT_CONFIG.countdownTarget).getTime();
+  const diff = Math.max(0, target - Date.now());
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+
+  daysEl.textContent = pad2(days);
+  document.getElementById("countdown-hours").textContent = pad2(hours);
+  document.getElementById("countdown-minutes").textContent = pad2(minutes);
+  document.getElementById("countdown-seconds").textContent = pad2(seconds);
 }
 
 function showNotFound() {
@@ -175,6 +199,8 @@ function init() {
   renderPipedNames(invitationNamesEl, group.names);
 
   renderEventDetails();
+  updateCountdown();
+  window.setInterval(updateCountdown, 1000);
 
   scaleAllFrames();
   fitTextToOneLine(envelopeNamesEl, 56);

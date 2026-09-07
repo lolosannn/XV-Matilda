@@ -7,6 +7,9 @@ const EVENT_CONFIG = {
   venueName: "Villa Victoria",
   venueAddress: "Av. Avellaneda 323, Bernal",
   dressCode: "Dress code a confirmar",
+  // Fecha y hora del evento en formato ISO (hora local), para la cuenta
+  // regresiva. Tiene que coincidir con "date" y "time" de arriba.
+  countdownTarget: "2026-10-31T21:00:00",
   // Link del Google Forms para confirmar asistencia.
   // Reemplazá esta URL por la del formulario real.
   rsvpFormUrl: "https://forms.gle/REEMPLAZAR-CON-TU-FORMULARIO",
