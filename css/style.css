@@ -479,11 +479,12 @@ body {
   display: block;
   width: 100%;
   height: auto;
+  margin-top: 220px;
 }
 
 .s2-dt-flower {
   left: 50%;
-  top: 2406px;
+  top: 2626px;
   width: 140px;
   transform: translateX(-50%);
 }
@@ -517,32 +518,32 @@ body {
 }
 
 .s2-dt-label--fecha {
-  top: 2561px;
+  top: 2781px;
 }
 
 .s2-dt-value--fecha {
-  top: 2591px;
+  top: 2811px;
 }
 
 .s2-dt-label--horario {
-  top: 2741px;
+  top: 2961px;
 }
 
 .s2-dt-value--horario {
-  top: 2771px;
+  top: 2991px;
 }
 
 .s2-dt-label--lugar {
-  top: 2901px;
+  top: 3121px;
 }
 
 .s2-dt-value--lugar {
-  top: 2931px;
+  top: 3151px;
 }
 
 .s2-dt-address {
   left: 50%;
-  top: 3040px;
+  top: 3260px;
   width: 900px;
   transform: translateX(-50%);
   margin: 0;
