@@ -48,17 +48,6 @@ body {
   overflow: hidden;
 }
 
-/* Variante que no scrollea: queda fija en pantalla, alineada con el
-   contenido que sí scrollea gracias a --align-top calculado en JS. */
-.frame-scaler--fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 20;
-}
-
 .frame {
   position: absolute;
   top: 0;
@@ -398,6 +387,13 @@ body {
   transform: translateX(-50%);
 }
 
+.s2-lace {
+  left: 50%;
+  top: 914px;
+  width: 1407px;
+  transform: translateX(-50%);
+}
+
 .s2-photo {
   left: 50%;
   top: 1000px;
@@ -456,13 +452,6 @@ body {
   left: 50%;
   top: 1930px;
   width: 527px;
-  transform: translateX(-50%);
-}
-
-.lace-fixed {
-  left: 50%;
-  top: 0;
-  width: 1407px;
   transform: translateX(-50%);
 }
 

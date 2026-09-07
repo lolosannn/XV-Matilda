@@ -51,19 +51,6 @@
     <!-- PENDIENTE: seguir armando debajo de la bajada (fecha/hora/lugar, mapa,
          dresscode, cuenta regresiva, RSVP) en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
-      <!-- Las "puntas" de encaje quedan fijas en pantalla mientras el resto scrollea -->
-      <div
-        class="frame-scaler frame-scaler--fixed"
-        id="lace-scaler"
-        data-frame-width="1920"
-        data-frame-height="560"
-        data-align-top="0"
-      >
-        <div class="frame" id="lace-frame">
-          <img class="abs lace-fixed" src="images/screen2-lace-fixed.png" alt="" />
-        </div>
-      </div>
-
       <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="2830">
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
@@ -82,6 +69,10 @@
             <img class="abs s2-divider-1" src="images/screen2-divider-1.png" alt="" />
 
             <img class="abs s2-logo" src="images/screen2-logo.png" alt="Matilda mis XV" />
+
+            <!-- El encaje queda detrás de la foto, asomando alrededor de ella
+                 hasta juntarse en punta justo arriba de los nombres. -->
+            <img class="abs s2-lace" src="images/screen2-lace-fixed.png" alt="" />
 
             <img class="abs s2-photo" src="images/screen2-photo.gif" alt="Matilda" />
 

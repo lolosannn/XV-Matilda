@@ -145,15 +145,7 @@ function scaleFrame(scaler) {
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
   frame.style.transform = "scale(" + scale + ")";
-
-  if (scaler.classList.contains("frame-scaler--fixed")) {
-    // No scrollea: solo la alineamos verticalmente con el punto del
-    // contenido scrolleable al que debe "pegarse" (dataset.alignTop).
-    const alignTop = parseFloat(scaler.dataset.alignTop || "0");
-    scaler.style.top = alignTop * scale + "px";
-  } else {
-    scaler.style.height = frameHeight * scale + "px";
-  }
+  scaler.style.height = frameHeight * scale + "px";
 }
 
 function scaleAllFrames() {
