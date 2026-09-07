@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=5" />
+  <link rel="stylesheet" href="css/style.css?v=6" />
 </head>
 <body>
   <div id="app">
@@ -48,8 +48,8 @@
     <div class="petal-layer" id="petal-layer"></div>
 
     <!-- Pantalla 2: invitación con detalles del evento -->
-    <!-- PENDIENTE: seguir armando debajo de la bajada (fecha/hora/lugar, mapa,
-         dresscode, cuenta regresiva, RSVP) en cuanto lleguen esas imágenes -->
+    <!-- PENDIENTE: seguir armando debajo de fecha/hora/lugar (mapa, dresscode,
+         cuenta regresiva, RSVP) en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
       <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
            que estés en la pantalla 2 (no se suelta ni scrollea), para que
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="2830">
+      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="3680">
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
 
@@ -95,14 +95,32 @@
             </p>
 
             <img class="abs s2-divider-3" src="images/screen2-divider-3.png" alt="" />
+
+            <!-- Fecha / horario / lugar: sigue el mismo ancho de la tarjeta
+                 en flujo normal (no "abs"), así estira la tarjeta hacia
+                 abajo para hacerle lugar. -->
+            <img class="s2-dt-bg" src="images/screen2-datetime-bg.jpg" alt="" />
+
+            <img class="abs s2-dt-flower" src="images/screen2-flower.png" alt="" />
+
+            <p class="abs s2-dt-label s2-dt-label--fecha">Fecha</p>
+            <p class="abs s2-dt-value s2-dt-value--fecha" id="event-date">31/10/2026</p>
+
+            <p class="abs s2-dt-label s2-dt-label--horario">Horario</p>
+            <p class="abs s2-dt-value s2-dt-value--horario" id="event-time">21hs</p>
+
+            <p class="abs s2-dt-label s2-dt-label--lugar">Lugar</p>
+            <p class="abs s2-dt-value s2-dt-value--lugar" id="event-venue">Villa Victoria</p>
+
+            <p class="abs s2-dt-address" id="event-address">Av. Avellaneda 323, Bernal</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="js/guests.js?v=5"></script>
-  <script src="js/config.js?v=5"></script>
-  <script src="js/main.js?v=5"></script>
+  <script src="js/guests.js?v=6"></script>
+  <script src="js/config.js?v=6"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

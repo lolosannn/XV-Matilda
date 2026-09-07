@@ -49,10 +49,14 @@ function findGuestGroup(slug) {
   return GUEST_GROUPS.find((group) => group.slug === slug) || null;
 }
 
-// PENDIENTE: cuando se agregue la sección de fecha/hora/lugar, dresscode,
-// cuenta regresiva y RSVP, completar acá el resto de EVENT_CONFIG.
+// PENDIENTE: cuando se agregue la sección de mapa, dresscode, cuenta
+// regresiva y RSVP, completar acá el resto de EVENT_CONFIG.
 function renderEventDetails() {
   document.getElementById("celebrant-name").textContent = EVENT_CONFIG.celebrantName;
+  document.getElementById("event-date").textContent = EVENT_CONFIG.date;
+  document.getElementById("event-time").textContent = EVENT_CONFIG.time;
+  document.getElementById("event-venue").textContent = EVENT_CONFIG.venueName;
+  document.getElementById("event-address").textContent = EVENT_CONFIG.venueAddress;
 }
 
 function showNotFound() {

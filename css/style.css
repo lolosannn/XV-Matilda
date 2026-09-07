@@ -471,6 +471,90 @@ body {
   transform: translateX(-50%);
 }
 
+/* ---------- Pantalla 2: fecha / horario / lugar ---------- */
+/* Sigue en flujo normal (no "abs") justo debajo de todo lo anterior,
+   así estira la tarjeta hacia abajo. Las esquinas de arriba se
+   redondean acá porque la imagen en sí es un rectángulo derecho. */
+.s2-dt-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 48px 48px 0 0;
+}
+
+.s2-dt-flower {
+  left: 50%;
+  top: 2406px;
+  width: 140px;
+  transform: translateX(-50%);
+}
+
+.s2-dt-label {
+  left: 50%;
+  width: 700px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-size: 26px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fbf3ec;
+  font-weight: 400;
+}
+
+.s2-dt-value {
+  left: 50%;
+  width: 1000px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-family: "Yellowtail", cursive;
+  font-size: 84px;
+  line-height: 1.1;
+  color: #fff;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.s2-dt-label--fecha {
+  top: 2561px;
+}
+
+.s2-dt-value--fecha {
+  top: 2591px;
+}
+
+.s2-dt-label--horario {
+  top: 2741px;
+}
+
+.s2-dt-value--horario {
+  top: 2771px;
+}
+
+.s2-dt-label--lugar {
+  top: 2901px;
+}
+
+.s2-dt-value--lugar {
+  top: 2931px;
+}
+
+.s2-dt-address {
+  left: 50%;
+  top: 3040px;
+  width: 900px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 28px;
+  color: #fff;
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;

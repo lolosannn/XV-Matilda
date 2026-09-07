@@ -2,10 +2,10 @@
 const EVENT_CONFIG = {
   celebrantName: "Matilda",
   eventTitle: "Mis XV",
-  date: "Fecha a confirmar",
-  time: "Hora a confirmar",
-  venueName: "Lugar a confirmar",
-  venueAddress: "Dirección a confirmar",
+  date: "31/10/2026",
+  time: "21hs",
+  venueName: "Villa Victoria",
+  venueAddress: "Av. Avellaneda 323, Bernal",
   dressCode: "Dress code a confirmar",
   // Link del Google Forms para confirmar asistencia.
   // Reemplazá esta URL por la del formulario real.
