@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=8" />
+  <link rel="stylesheet" href="css/style.css?v=9" />
 </head>
 <body>
   <div id="app">
@@ -48,8 +48,8 @@
     <div class="petal-layer" id="petal-layer"></div>
 
     <!-- Pantalla 2: invitación con detalles del evento -->
-    <!-- PENDIENTE: seguir armando debajo de fecha/hora/lugar (mapa, dresscode,
-         cuenta regresiva, RSVP) en cuanto lleguen esas imágenes -->
+    <!-- PENDIENTE: seguir armando debajo del mapa (dresscode, cuenta
+         regresiva, RSVP) en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
       <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
            que estés en la pantalla 2 (no se suelta ni scrollea), para que
@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="3900">
+      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="4830">
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
 
@@ -113,14 +113,25 @@
             <p class="abs s2-dt-value s2-dt-value--lugar" id="event-venue">Villa Victoria</p>
 
             <p class="abs s2-dt-address" id="event-address">Av. Avellaneda 323, Bernal</p>
+
+            <!-- Espaciador en flujo normal: estira la tarjeta (que se
+                 mide por su contenido en flujo, no por los "abs") para
+                 hacerle lugar a la sección del mapa de abajo. -->
+            <div class="s2-map-spacer" aria-hidden="true"></div>
+
+            <img class="abs s2-map-divider-top" src="images/screen2-map-divider-top.png" alt="" />
+
+            <img class="abs s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
+
+            <img class="abs s2-map-divider-bottom" src="images/screen2-map-divider-bottom.png" alt="" />
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="js/guests.js?v=8"></script>
-  <script src="js/config.js?v=8"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="js/guests.js?v=9"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/main.js?v=9"></script>
 </body>
 </html>
