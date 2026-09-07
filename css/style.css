@@ -473,13 +473,12 @@ body {
 
 /* ---------- Pantalla 2: fecha / horario / lugar ---------- */
 /* Sigue en flujo normal (no "abs") justo debajo de todo lo anterior,
-   así estira la tarjeta hacia abajo. Las esquinas de arriba se
-   redondean acá porque la imagen en sí es un rectángulo derecho. */
+   así estira la tarjeta hacia abajo. Las esquinas de arriba ya vienen
+   redondeadas en el PNG (con transparencia), no hace falta CSS. */
 .s2-dt-bg {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 48px 48px 0 0;
 }
 
 .s2-dt-flower {
