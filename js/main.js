@@ -120,6 +120,8 @@ function openEnvelope() {
     // Recién ahora es visible, así que recién ahora se puede medir su ancho
     // real para escalar sus frames (antes, oculta, medía 0).
     scaleAllFrames();
+    computeLaceRestTop();
+    updateLaceStick();
     void invitationScreen.offsetWidth;
     invitationScreen.classList.add("active", "entering");
 
@@ -145,11 +147,56 @@ function scaleFrame(scaler) {
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
   frame.style.transform = "scale(" + scale + ")";
-  scaler.style.height = frameHeight * scale + "px";
+
+  if (!scaler.classList.contains("frame-scaler--fixed")) {
+    scaler.style.height = frameHeight * scale + "px";
+  }
 }
 
 function scaleAllFrames() {
   document.querySelectorAll(".frame-scaler").forEach(scaleFrame);
+}
+
+// El encaje de pantalla 2 acompaña el scroll desde el principio: mientras el
+// scroll normal no llegó todavía a su posición final (detrás de la foto,
+// #lace-settled dentro de la tarjeta), lo mostramos pegado arriba de la
+// pantalla con position:fixed. Apenas el scroll alcanza ese punto, apagamos
+// la copia fija y queda sola la copia de adentro de la tarjeta, que a partir
+// de ahí scrollea como cualquier otro elemento (por eso nunca tapa texto que
+// venga después, como los nombres).
+let laceRestTopDocument = null;
+
+function computeLaceRestTop() {
+  const laceSettled = document.getElementById("lace-settled");
+  if (!laceSettled) return;
+  laceRestTopDocument = laceSettled.getBoundingClientRect().top + window.scrollY;
+}
+
+function updateLaceStick() {
+  const laceScaler = document.getElementById("lace-scaler");
+  const laceSettled = document.getElementById("lace-settled");
+  if (!laceScaler || !laceSettled || laceRestTopDocument === null) return;
+
+  const restTopViewport = laceRestTopDocument - window.scrollY;
+
+  if (restTopViewport > 0) {
+    laceScaler.style.top = "0px";
+    laceScaler.classList.remove("is-released");
+    laceSettled.classList.remove("is-visible");
+  } else {
+    laceScaler.classList.add("is-released");
+    laceSettled.classList.add("is-visible");
+  }
+}
+
+let laceTicking = false;
+function onScrollForLace() {
+  if (laceTicking) return;
+  laceTicking = true;
+  window.requestAnimationFrame(function () {
+    updateLaceStick();
+    laceTicking = false;
+  });
 }
 
 function init() {
@@ -172,7 +219,12 @@ function init() {
   scaleAllFrames();
   fitTextToOneLine(envelopeNamesEl, 56);
   fitTextToOneLine(invitationNamesEl, 26);
-  window.addEventListener("resize", scaleAllFrames);
+  window.addEventListener("resize", function () {
+    scaleAllFrames();
+    computeLaceRestTop();
+    updateLaceStick();
+  });
+  window.addEventListener("scroll", onScrollForLace, { passive: true });
 
   const envelope = document.getElementById("envelope");
   envelope.addEventListener("click", openEnvelope);

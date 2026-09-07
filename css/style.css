@@ -48,6 +48,24 @@ body {
   overflow: hidden;
 }
 
+/* Variante que no scrollea: se mantiene pegada arriba de la pantalla
+   mientras el resto del contenido scrollea por detrás (top actualizado
+   en JS en cada scroll). Cuando el scroll normal alcanza su posición
+   final, se oculta y la reemplaza la copia que ya vive dentro de la
+   tarjeta (.s2-lace), que sigue scrolleando como cualquier otro elemento. */
+.frame-scaler--fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.frame-scaler--fixed.is-released {
+  opacity: 0;
+}
+
 .frame {
   position: absolute;
   top: 0;
@@ -392,6 +410,11 @@ body {
   top: 914px;
   width: 1407px;
   transform: translateX(-50%);
+  opacity: 0;
+}
+
+.s2-lace.is-visible {
+  opacity: 1;
 }
 
 .s2-photo {
@@ -452,6 +475,13 @@ body {
   left: 50%;
   top: 1930px;
   width: 527px;
+  transform: translateX(-50%);
+}
+
+.lace-fixed {
+  left: 50%;
+  top: 0;
+  width: 1407px;
   transform: translateX(-50%);
 }
 
