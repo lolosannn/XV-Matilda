@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 <body>
   <div id="app">
@@ -51,11 +51,9 @@
     <!-- PENDIENTE: seguir armando debajo de la bajada (fecha/hora/lugar, mapa,
          dresscode, cuenta regresiva, RSVP) en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
-      <!-- El encaje acompaña el scroll desde el principio de la pantalla 2:
-           mientras no llegamos a su posición final (detrás de la foto) queda
-           fijo en pantalla seleccionado, y apenas el scroll normal lo alcanza
-           se apaga y toma la posta la copia que vive dentro de la tarjeta
-           (ver .s2-lace más abajo), ya scrolleando normal y detrás de la foto. -->
+      <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
+           que estés en la pantalla 2 (no se suelta ni scrollea), para que
+           te acompañe incluso cuando se sume más contenido más abajo. -->
       <div
         class="frame-scaler frame-scaler--fixed"
         id="lace-scaler"
@@ -86,10 +84,6 @@
 
             <img class="abs s2-logo" src="images/screen2-logo.png" alt="Matilda mis XV" />
 
-            <!-- Posición final del encaje, detrás de la foto: toma la posta
-                 cuando el scroll normal alcanza este punto (ver js/main.js). -->
-            <img class="abs s2-lace" id="lace-settled" src="images/screen2-lace-fixed.png" alt="" />
-
             <img class="abs s2-photo" src="images/screen2-photo.gif" alt="Matilda" />
 
             <h2 id="guest-names-invitation" class="abs s2-names">&nbsp;</h2>
@@ -107,8 +101,8 @@
     </div>
   </div>
 
-  <script src="js/guests.js?v=3"></script>
-  <script src="js/config.js?v=3"></script>
-  <script src="js/main.js?v=3"></script>
+  <script src="js/guests.js?v=4"></script>
+  <script src="js/config.js?v=4"></script>
+  <script src="js/main.js?v=4"></script>
 </body>
 </html>
