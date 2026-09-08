@@ -481,12 +481,11 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: 220px;
 }
 
 .s2-dt-flower {
   left: 50%;
-  top: 2626px;
+  top: 2406px;
   width: 140px;
   transform: translateX(-50%);
 }
@@ -520,32 +519,32 @@ body {
 }
 
 .s2-dt-label--fecha {
-  top: 2781px;
+  top: 2561px;
 }
 
 .s2-dt-value--fecha {
-  top: 2811px;
+  top: 2591px;
 }
 
 .s2-dt-label--horario {
-  top: 2961px;
+  top: 2741px;
 }
 
 .s2-dt-value--horario {
-  top: 2991px;
+  top: 2771px;
 }
 
 .s2-dt-label--lugar {
-  top: 3121px;
+  top: 2901px;
 }
 
 .s2-dt-value--lugar {
-  top: 3151px;
+  top: 2931px;
 }
 
 .s2-dt-address {
   left: 50%;
-  top: 3260px;
+  top: 3040px;
   width: 900px;
   transform: translateX(-50%);
   margin: 0;
@@ -566,21 +565,21 @@ body {
 
 .s2-map-divider-top {
   left: 50%;
-  top: 3606px;
+  top: 3386px;
   width: 809px;
   transform: translateX(-50%);
 }
 
 .s2-map-image {
   left: 50%;
-  top: 3794px;
+  top: 3574px;
   width: 638px;
   transform: translateX(-50%);
 }
 
 .s2-map-divider-bottom {
   left: 50%;
-  top: 4284px;
+  top: 4064px;
   width: 809px;
   transform: translateX(-50%);
 }
@@ -590,7 +589,7 @@ body {
    cual lo subieron: se coloca sin agregar nada más encima. */
 .s2-dresscode {
   left: 50%;
-  top: 4492px;
+  top: 4272px;
   width: 1184px;
   transform: translateX(-50%);
 }
@@ -604,14 +603,14 @@ body {
 
 .s2-countdown-overlay {
   left: 50%;
-  top: 5041px;
+  top: 4821px;
   width: 831px;
   transform: translateX(-50%);
 }
 
 .s2-countdown-numbers {
   left: 50%;
-  top: 5150px;
+  top: 4930px;
   width: 831px;
   height: 90px;
   transform: translateX(-50%);
@@ -678,7 +677,7 @@ body {
 
 .s2-rsvp-button {
   left: 50%;
-  top: 5670px;
+  top: 5450px;
   width: 465px;
   padding: 22px 0;
   transform: translateX(-50%);
