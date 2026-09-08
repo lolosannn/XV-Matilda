@@ -704,6 +704,24 @@ body {
   transform: translateX(-50%) translateY(-2px);
 }
 
+/* ---------- Pantalla 2: aviso de cierre ---------- */
+.s2-footer-divider {
+  display: block;
+  width: 275px;
+  margin: 90px auto 0;
+}
+
+.s2-footer-note {
+  width: 700px;
+  margin: 28px auto 70px;
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;
