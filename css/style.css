@@ -358,6 +358,7 @@ body {
   left: 1520px;
   top: 260px;
   width: 150px;
+  z-index: 2;
 }
 
 .s2-card {
