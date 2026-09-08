@@ -127,7 +127,7 @@ body {
   width: 1265px;
   transform: translateX(-50%);
   text-align: center;
-  font-family: "Yellowtail", cursive;
+  font-family: "Pinyon Script", cursive;
   font-size: 160px;
   line-height: 1.1;
   color: var(--ink);
@@ -375,7 +375,8 @@ body {
 .s2-card-bg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 2366px;
+  background-color: #f6f6f6;
 }
 
 .s2-quote {
@@ -481,9 +482,7 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  background-image: url("../images/screen2-card.jpg");
-  background-repeat: repeat;
-  background-size: 1391px auto;
+  background-color: #f6f6f6;
 }
 
 .s2-dt-flower {
@@ -513,7 +512,7 @@ body {
   transform: translateX(-50%);
   margin: 0;
   text-align: center;
-  font-family: "Yellowtail", cursive;
+  font-family: "Pinyon Script", cursive;
   font-size: 84px;
   line-height: 1.1;
   color: #fff;
@@ -647,7 +646,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Yellowtail", cursive;
+  font-family: "Pinyon Script", cursive;
   font-size: 64px;
   color: #fff;
   font-weight: 400;
@@ -674,7 +673,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -55%);
-  font-family: "Yellowtail", cursive;
+  font-family: "Pinyon Script", cursive;
   font-size: 64px;
   color: #fff;
   font-weight: 400;
