@@ -27,14 +27,26 @@ function renderPipedNames(el, names) {
   });
 }
 
-// Reduce el tamaño de fuente hasta que el texto entre en una sola línea
-// dentro del ancho de su contenedor. Necesario porque la cantidad de
-// invitados por grupo varía (de 1 a 5 nombres) y el diseño está pensado
-// para un texto de ejemplo de longitud fija.
-function fitTextToOneLine(el, minFontPx) {
+// Reduce el tamaño de fuente hasta que el texto entre en el espacio
+// disponible. Necesario porque la cantidad de invitados por grupo varía
+// (de 1 a 5 nombres) y el diseño está pensado para un texto de ejemplo
+// de longitud fija.
+// "minDesignPx" es el piso de siempre, en píxeles de diseño (para no
+// achicar de más en desktop). "minVisualPx" es un piso adicional en
+// píxeles reales de pantalla, para que en mobile (donde todo escala
+// mucho más chico) no termine ilegible; se usa el que sea más grande.
+// "maxHeightPx" (opcional, en píxeles de diseño) es el alto disponible
+// antes de chocar con el elemento de abajo: en mobile el texto puede
+// pasar a una segunda línea (así no se corta el ancho de la pantalla),
+// así que hace falta controlar también que no crezca de más en alto.
+function fitTextToOneLine(el, minDesignPx, minVisualPx, scale, maxHeightPx) {
   let fontSize = parseFloat(window.getComputedStyle(el).fontSize);
   const maxWidth = el.clientWidth;
-  while (el.scrollWidth > maxWidth && fontSize > minFontPx) {
+  const minFontPx = Math.max(minDesignPx, minVisualPx / scale);
+  while (
+    (el.scrollWidth > maxWidth || (maxHeightPx && el.scrollHeight > maxHeightPx)) &&
+    fontSize > minFontPx
+  ) {
     fontSize -= 2;
     el.style.fontSize = fontSize + "px";
   }
@@ -145,8 +157,11 @@ function openEnvelope() {
 
     invitationScreen.classList.remove("hidden");
     // Recién ahora es visible, así que recién ahora se puede medir su ancho
-    // real para escalar sus frames (antes, oculta, medía 0).
-    scaleAllFrames();
+    // real para escalar sus frames y para ajustar el tamaño de los
+    // nombres (antes, oculta, todo medía 0 y el ajuste no tenía efecto).
+    const scale = scaleAllFrames();
+    const invitationNamesEl = document.getElementById("guest-names-invitation");
+    fitTextToOneLine(invitationNamesEl, 26, 14, scale, 240);
     void invitationScreen.offsetWidth;
     invitationScreen.classList.add("active", "entering");
 
@@ -159,6 +174,10 @@ function openEnvelope() {
   }, 1100);
 }
 
+// Espacio libre debajo del final real de la tarjeta (".s2-card"), en
+// píxeles de diseño. Mismo criterio que se usó a mano en cada sección.
+const CARD_BOTTOM_MARGIN = 87;
+
 // Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de
 // ancho fijo) y lo escala uniformemente para que ocupe el ancho del dispositivo,
 // igual que si fuera una imagen. Así el layout queda pixel-perfect en cualquier
@@ -166,8 +185,20 @@ function openEnvelope() {
 function scaleFrame(scaler) {
   const frame = scaler.querySelector(".frame");
   const frameWidth = parseFloat(scaler.dataset.frameWidth);
-  const frameHeight = parseFloat(scaler.dataset.frameHeight);
+  let frameHeight = parseFloat(scaler.dataset.frameHeight);
   const scale = scaler.clientWidth / frameWidth;
+
+  // En mobile el texto se agranda (ver CSS, calc(Xpx / var(--frame-scale)))
+  // para seguir siendo legible, así que la tarjeta puede terminar siendo
+  // más alta que el número fijo calculado a mano para desktop. Acá se mide
+  // el alto real de ".s2-card" (que crece por su contenido en flujo) y, si
+  // hace falta más lugar que el declarado, se usa ese en su lugar.
+  const card = frame.querySelector(".s2-card");
+  if (card) {
+    const cardTop = parseFloat(getComputedStyle(card).top) || 0;
+    const neededHeight = cardTop + card.offsetHeight + CARD_BOTTOM_MARGIN;
+    frameHeight = Math.max(frameHeight, neededHeight);
+  }
 
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
@@ -178,8 +209,22 @@ function scaleFrame(scaler) {
   }
 }
 
+const DESIGN_WIDTH = 1920;
+
+// Todos los frame-scalers comparten el mismo ancho de diseño (1920) y de
+// pantalla, así que su factor de escala siempre es el mismo. Se calcula
+// acá directo del ancho de la ventana (no del clientWidth de un scaler
+// puntual, que puede estar oculto -y medir 0- si todavía no se abrió el
+// sobre) y se guarda en una variable CSS ANTES de escalar los frames, para
+// que en mobile el texto pueda "contrarrestar" el escalado (font-size:
+// calc(Xpx / var(--frame-scale))) y verse legible aunque el resto del
+// diseño siga escalando como imagen -y para que, al medir el alto real de
+// la tarjeta en scaleFrame(), el texto ya tenga su tamaño mobile correcto.
 function scaleAllFrames() {
+  const scale = document.documentElement.clientWidth / DESIGN_WIDTH;
+  document.documentElement.style.setProperty("--frame-scale", scale);
   document.querySelectorAll(".frame-scaler").forEach(scaleFrame);
+  return scale;
 }
 
 function init() {
@@ -201,9 +246,14 @@ function init() {
   updateCountdown();
   window.setInterval(updateCountdown, 1000);
 
-  scaleAllFrames();
-  fitTextToOneLine(envelopeNamesEl, 56);
-  fitTextToOneLine(invitationNamesEl, 26);
+  const scale = scaleAllFrames();
+  // El alto disponible (maxHeightPx) es el espacio real antes de chocar
+  // con el elemento de abajo (divider-vector en mobile, que se corre un
+  // poco más abajo -ver CSS- para hacerle lugar a una segunda línea
+  // cuando el grupo tiene varios invitados). Los nombres de la pantalla 2
+  // se ajustan recién al abrir el sobre (ver openEnvelope), porque hasta
+  // entonces esa pantalla está oculta y mide 0.
+  fitTextToOneLine(envelopeNamesEl, 56, 18, scale, 250);
   window.addEventListener("resize", scaleAllFrames);
 
   const envelope = document.getElementById("envelope");
