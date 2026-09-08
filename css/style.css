@@ -745,6 +745,12 @@ body {
   color: var(--ink-soft);
 }
 
+.s2-footer-spacer {
+  display: block;
+  width: 100%;
+  height: 190px;
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;
