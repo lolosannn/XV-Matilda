@@ -567,7 +567,7 @@ body {
 
 .s2-map-divider-top {
   left: 50%;
-  top: 3386px;
+  top: 3411px;
   width: 809px;
   transform: translateX(-50%);
 }
@@ -596,7 +596,7 @@ body {
 }
 
 .s2-map-hint {
-  margin: 14px 0 0;
+  margin: 8px 0 0;
   font-family: "Libre Baskerville", serif;
   font-style: italic;
   font-size: 20px;
@@ -605,7 +605,7 @@ body {
 
 .s2-map-divider-bottom {
   left: 50%;
-  top: 4076px;
+  top: 4063px;
   width: 809px;
   transform: translateX(-50%);
 }
@@ -629,14 +629,14 @@ body {
 
 .s2-countdown-overlay {
   left: 50%;
-  top: 4821px;
+  top: 5193px;
   width: 831px;
   transform: translateX(-50%);
 }
 
 .s2-countdown-numbers {
   left: 50%;
-  top: 4930px;
+  top: 5302px;
   width: 831px;
   height: 90px;
   transform: translateX(-50%);
@@ -703,7 +703,7 @@ body {
 
 .s2-rsvp-button {
   left: 50%;
-  top: 5450px;
+  top: 5822px;
   width: 465px;
   padding: 22px 0;
   transform: translateX(-50%);
