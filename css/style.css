@@ -706,7 +706,7 @@ body {
 
 .lace-fixed {
   left: 50%;
-  top: 4px;
+  top: 0;
   width: 1407px;
   transform: translateX(-50%);
 }
