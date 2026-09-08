@@ -481,7 +481,9 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  background: #f6f6f6;
+  background-image: url("../images/screen2-card.jpg");
+  background-repeat: repeat;
+  background-size: 1391px auto;
 }
 
 .s2-dt-flower {
