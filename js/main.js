@@ -162,19 +162,14 @@ function openEnvelope() {
   }, 1100);
 }
 
-// Ancho y posición (en píxeles de diseño) de la tarjeta blanca dentro del
-// frame de 1920px de la pantalla 2. Se usan para el "zoom" en mobile.
-const CARD_WIDTH = 1391;
-const CARD_LEFT = (1920 - CARD_WIDTH) / 2;
-
 // Por debajo de este ancho de pantalla, en vez de mostrar el frame de
-// diseño completo (que a los costados de la tarjeta deja ver el fondo
-// beige, pensado para pantallas grandes), se hace zoom para que la
-// tarjeta ocupe todo el ancho -sin nada de beige a los costados-. Esto
+// diseño completo (que a los costados deja ver el fondo beige, pensado
+// para pantallas grandes), se hace zoom sobre un recorte más angosto
+// -definido por "data-zoom-width" en cada frame-scaler- para que ese
+// recorte ocupe todo el ancho, sin nada de beige a los costados. Esto
 // también agranda el texto proporcionalmente (es la misma idea de
-// "reproducir el diseño como una imagen", pero encuadrando la tarjeta
-// en vez del frame entero) y hace que el encaje fijo de abajo vuelva a
-// sentirse grande, revelando el contenido de a poco al scrollear.
+// "reproducir el diseño como una imagen", pero encuadrando ese recorte
+// en vez del frame entero).
 const MOBILE_ZOOM_BREAKPOINT = 760;
 
 // Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de
@@ -187,9 +182,15 @@ function scaleFrame(scaler) {
   const frameHeight = parseFloat(scaler.dataset.frameHeight);
   const viewportWidth = document.documentElement.clientWidth;
 
+  // Ancho (en píxeles de diseño) del recorte a mostrar a pantalla completa
+  // en mobile: la tarjeta blanca en pantalla 2, o un recorte a medida del
+  // sobre en pantalla 1. Centrado siempre dentro del frame de 1920px.
+  const zoomWidth = parseFloat(scaler.dataset.zoomWidth) || frameWidth;
+  const zoomLeft = (frameWidth - zoomWidth) / 2;
+
   const zoomToCard = scaler.dataset.zoomMobile === "true" && viewportWidth < MOBILE_ZOOM_BREAKPOINT;
-  const scale = zoomToCard ? viewportWidth / CARD_WIDTH : viewportWidth / frameWidth;
-  const shiftX = zoomToCard ? -CARD_LEFT : 0;
+  const scale = zoomToCard ? viewportWidth / zoomWidth : viewportWidth / frameWidth;
+  const shiftX = zoomToCard ? -zoomLeft : 0;
 
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
