@@ -49,14 +49,13 @@ function findGuestGroup(slug) {
   return GUEST_GROUPS.find((group) => group.slug === slug) || null;
 }
 
-// PENDIENTE: cuando se agregue la sección de RSVP, completar acá el
-// resto de EVENT_CONFIG.
 function renderEventDetails() {
   document.getElementById("celebrant-name").textContent = EVENT_CONFIG.celebrantName;
   document.getElementById("event-date").textContent = EVENT_CONFIG.date;
   document.getElementById("event-time").textContent = EVENT_CONFIG.time;
   document.getElementById("event-venue").textContent = EVENT_CONFIG.venueName;
   document.getElementById("event-address").textContent = EVENT_CONFIG.venueAddress;
+  document.getElementById("rsvp-button").href = EVENT_CONFIG.rsvpFormUrl;
 }
 
 function pad2(n) {

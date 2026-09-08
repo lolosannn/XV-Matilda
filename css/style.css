@@ -665,6 +665,41 @@ body {
   left: 72.62%;
 }
 
+/* ---------- Pantalla 2: RSVP ---------- */
+/* El PNG trae todo el contenido armado (título, textos, flourish) menos
+   el botón, que queda como hueco vacío para armarlo acá con CSS. */
+.s2-rsvp-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.s2-rsvp-button {
+  left: 50%;
+  top: 5743px;
+  width: 620px;
+  padding: 30px 0;
+  transform: translateX(-50%);
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: "Libre Baskerville", serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: #fbf3ec;
+  background: #4a3320;
+  border-radius: 999px;
+  box-shadow: 0 10px 22px rgba(60, 40, 20, 0.22);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.s2-rsvp-button:hover,
+.s2-rsvp-button:focus-visible {
+  background: #5c4128;
+  transform: translateX(-50%) translateY(-2px);
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;

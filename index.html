@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=11" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
 </head>
 <body>
   <div id="app">
@@ -48,8 +48,6 @@
     <div class="petal-layer" id="petal-layer"></div>
 
     <!-- Pantalla 2: invitación con detalles del evento -->
-    <!-- PENDIENTE: seguir armando debajo de la cuenta regresiva (RSVP)
-         en cuanto lleguen esas imágenes -->
     <div id="screen-invitation" class="screen hidden">
       <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
            que estés en la pantalla 2 (no se suelta ni scrollea), para que
@@ -65,7 +63,7 @@
         </div>
       </div>
 
-      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="5850">
+      <div class="frame-scaler" id="invitation-scaler" data-frame-width="1920" data-frame-height="6855">
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
 
@@ -146,14 +144,28 @@
               <span class="s2-countdown-colon s2-countdown-colon--3" aria-hidden="true">:</span>
               <span class="s2-countdown-num s2-countdown-num--seconds" id="countdown-seconds">00</span>
             </div>
+
+            <!-- RSVP: sigue en flujo normal (no "abs"), como el resto de
+                 los fondos de sección, así estira la tarjeta sola. El PNG
+                 trae todo el contenido armado menos el botón, que se arma
+                 acá con CSS (enlaza a un Google Forms externo). -->
+            <img class="s2-rsvp-bg" src="images/screen2-rsvp-bg.png" alt="" />
+
+            <a
+              id="rsvp-button"
+              class="abs s2-rsvp-button"
+              href="#"
+              target="_blank"
+              rel="noopener"
+            >Confirmar asistencia</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="js/guests.js?v=11"></script>
-  <script src="js/config.js?v=11"></script>
-  <script src="js/main.js?v=11"></script>
+  <script src="js/guests.js?v=12"></script>
+  <script src="js/config.js?v=12"></script>
+  <script src="js/main.js?v=12"></script>
 </body>
 </html>
