@@ -11,8 +11,7 @@ const EVENT_CONFIG = {
   // regresiva. Tiene que coincidir con "date" y "time" de arriba.
   countdownTarget: "2026-10-31T21:00:00",
   // Link del Google Forms para confirmar asistencia.
-  // Reemplazá esta URL por la del formulario real.
-  rsvpFormUrl: "https://forms.gle/REEMPLAZAR-CON-TU-FORMULARIO",
+  rsvpFormUrl: "https://forms.gle/H8aPL3d8DTzejmv27",
   // Foto que aparece en la pantalla de la invitación (imagen 2).
   photoSrc: "images/photo-placeholder.svg",
 };

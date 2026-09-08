@@ -573,16 +573,40 @@ body {
   transform: translateX(-50%);
 }
 
-.s2-map-image {
+.s2-map-link {
   left: 50%;
   top: 3574px;
   width: 638px;
   transform: translateX(-50%);
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.s2-map-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.2s ease;
+}
+
+.s2-map-link:hover .s2-map-image,
+.s2-map-link:focus-visible .s2-map-image {
+  opacity: 0.85;
+}
+
+.s2-map-hint {
+  margin: 14px 0 0;
+  font-family: "Libre Baskerville", serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--ink-soft);
 }
 
 .s2-map-divider-bottom {
   left: 50%;
-  top: 4064px;
+  top: 4114px;
   width: 809px;
   transform: translateX(-50%);
 }
@@ -592,7 +616,7 @@ body {
    cual lo subieron: se coloca sin agregar nada más encima. */
 .s2-dresscode {
   left: 50%;
-  top: 4272px;
+  top: 4322px;
   width: 1184px;
   transform: translateX(-50%);
 }

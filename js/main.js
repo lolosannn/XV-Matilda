@@ -56,6 +56,9 @@ function renderEventDetails() {
   document.getElementById("event-venue").textContent = EVENT_CONFIG.venueName;
   document.getElementById("event-address").textContent = EVENT_CONFIG.venueAddress;
   document.getElementById("rsvp-button").href = EVENT_CONFIG.rsvpFormUrl;
+
+  const mapQuery = encodeURIComponent(EVENT_CONFIG.venueName + ", " + EVENT_CONFIG.venueAddress);
+  document.getElementById("map-link").href = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
 }
 
 function pad2(n) {

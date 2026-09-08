@@ -126,7 +126,12 @@
 
             <img class="abs s2-map-divider-top" src="images/screen2-map-divider-top.png" alt="" />
 
-            <img class="abs s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
+            <!-- El mapa lleva a Google Maps con la dirección real (se arma
+                 el link en JS, ver renderEventDetails). -->
+            <a id="map-link" class="abs s2-map-link" href="#" target="_blank" rel="noopener">
+              <img class="s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
+              <p class="s2-map-hint">Tocá el mapa para abrirlo en Google Maps</p>
+            </a>
 
             <img class="abs s2-map-divider-bottom" src="images/screen2-map-divider-bottom.png" alt="" />
 
