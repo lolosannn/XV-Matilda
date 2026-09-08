@@ -159,6 +159,21 @@ function openEnvelope() {
   }, 1100);
 }
 
+// Ancho y posición (en píxeles de diseño) de la tarjeta blanca dentro del
+// frame de 1920px de la pantalla 2. Se usan para el "zoom" en mobile.
+const CARD_WIDTH = 1391;
+const CARD_LEFT = (1920 - CARD_WIDTH) / 2;
+
+// Por debajo de este ancho de pantalla, en vez de mostrar el frame de
+// diseño completo (que a los costados de la tarjeta deja ver el fondo
+// beige, pensado para pantallas grandes), se hace zoom para que la
+// tarjeta ocupe todo el ancho -sin nada de beige a los costados-. Esto
+// también agranda el texto proporcionalmente (es la misma idea de
+// "reproducir el diseño como una imagen", pero encuadrando la tarjeta
+// en vez del frame entero) y hace que el encaje fijo de abajo vuelva a
+// sentirse grande, revelando el contenido de a poco al scrollear.
+const MOBILE_ZOOM_BREAKPOINT = 760;
+
 // Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de
 // ancho fijo) y lo escala uniformemente para que ocupe el ancho del dispositivo,
 // igual que si fuera una imagen. Así el layout queda pixel-perfect en cualquier
@@ -167,11 +182,15 @@ function scaleFrame(scaler) {
   const frame = scaler.querySelector(".frame");
   const frameWidth = parseFloat(scaler.dataset.frameWidth);
   const frameHeight = parseFloat(scaler.dataset.frameHeight);
-  const scale = scaler.clientWidth / frameWidth;
+  const viewportWidth = document.documentElement.clientWidth;
+
+  const zoomToCard = scaler.dataset.zoomMobile === "true" && viewportWidth < MOBILE_ZOOM_BREAKPOINT;
+  const scale = zoomToCard ? viewportWidth / CARD_WIDTH : viewportWidth / frameWidth;
+  const shiftX = zoomToCard ? -CARD_LEFT : 0;
 
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
-  frame.style.transform = "scale(" + scale + ")";
+  frame.style.transform = "scale(" + scale + ") translateX(" + shiftX + "px)";
 
   if (!scaler.classList.contains("frame-scaler--fixed")) {
     scaler.style.height = frameHeight * scale + "px";
