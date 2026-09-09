@@ -10,6 +10,52 @@
   "use strict";
 
   var STORAGE_KEY = "xv-edit-overrides";
+  var MOBILE_PREVIEW_KEY = "xv-edit-mobile-preview";
+  var EDIT_MODE_ACTIVE_KEY = "xv-edit-mode-active";
+  var MOBILE_BREAKPOINT = 760;
+  var MOBILE_PREVIEW_WIDTH = 390;
+
+  // Si venís de tocar "Vista mobile", esto tiene que quedar seteado ANTES
+  // de que main.js calcule la escala por primera vez (para que no haya un
+  // parpadeo mostrando el ancho real y después el simulado). Por eso va acá
+  // arriba de todo, fuera de cualquier callback: este script se ejecuta
+  // después de que main.js ya definió sus funciones, pero antes de que
+  // dispare su DOMContentLoaded.
+  if (window.sessionStorage && window.sessionStorage.getItem(MOBILE_PREVIEW_KEY) === "1") {
+    window.__xvForcedViewportWidth = MOBILE_PREVIEW_WIDTH;
+    document.body.classList.add("edit-mobile-preview");
+  }
+
+  function isMobilePreviewOn() {
+    return !!window.__xvForcedViewportWidth;
+  }
+
+  // Determina si el override activo es el de "mobile" o el de "desktop":
+  // por el ancho simulado (si se activó la vista previa) o, si no, por el
+  // ancho real de pantalla. Así un visitante que abre el link desde su
+  // celular de verdad recibe los ajustes de "mobile" sin necesitar nada
+  // especial.
+  function currentDevice() {
+    var width = window.__xvForcedViewportWidth || document.documentElement.clientWidth;
+    return width < MOBILE_BREAKPOINT ? "mobile" : "desktop";
+  }
+
+  function activeOverrides() {
+    return overrides[currentDevice()];
+  }
+
+  function emptyDeviceOverrides() {
+    return { items: {}, customElements: [], frameHeights: {}, cardSpacer: 0 };
+  }
+
+  function normalizeDeviceOverrides(data) {
+    if (!data || typeof data !== "object") return emptyDeviceOverrides();
+    if (!data.items) data.items = {};
+    if (!data.customElements) data.customElements = [];
+    if (!data.frameHeights) data.frameHeights = {};
+    if (!data.cardSpacer) data.cardSpacer = 0;
+    return data;
+  }
 
   // Clases de los elementos que se pueden seleccionar/editar. Cada uno ya
   // tiene una clase propia y única en style.css, así que sirve como id
@@ -83,14 +129,22 @@
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
       var parsed = raw ? JSON.parse(raw) : null;
-      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [], frameHeights: {}, cardSpacer: 0 };
-      if (!parsed.items) parsed.items = {};
-      if (!parsed.customElements) parsed.customElements = [];
-      if (!parsed.frameHeights) parsed.frameHeights = {};
-      if (!parsed.cardSpacer) parsed.cardSpacer = 0;
-      return parsed;
+      if (!parsed || typeof parsed !== "object") {
+        return { desktop: emptyDeviceOverrides(), mobile: emptyDeviceOverrides() };
+      }
+      // Formato viejo (de antes de separar desktop/mobile): tenía
+      // "items"/"customElements" sueltos en la raíz. Se migra tal cual a
+      // "desktop" (que es donde se venía editando hasta ahora) y "mobile"
+      // arranca de cero.
+      if (!parsed.desktop && !parsed.mobile) {
+        return { desktop: normalizeDeviceOverrides(parsed), mobile: emptyDeviceOverrides() };
+      }
+      return {
+        desktop: normalizeDeviceOverrides(parsed.desktop),
+        mobile: normalizeDeviceOverrides(parsed.mobile)
+      };
     } catch (e) {
-      return { items: {}, customElements: [], frameHeights: {}, cardSpacer: 0 };
+      return { desktop: emptyDeviceOverrides(), mobile: emptyDeviceOverrides() };
     }
   }
 
@@ -159,9 +213,9 @@
   function updateOverride(el, patch) {
     var id = stableId(el);
     if (!id) return;
-    if (!overrides.items[id]) overrides.items[id] = {};
+    if (!activeOverrides().items[id]) activeOverrides().items[id] = {};
     Object.keys(patch).forEach(function (k) {
-      overrides.items[id][k] = patch[k];
+      activeOverrides().items[id][k] = patch[k];
     });
     saveOverrides();
   }
@@ -170,22 +224,22 @@
     // Los elementos agregados a mano hay que crearlos ANTES de intentar
     // aplicarles su override de posición/texto/tamaño (si no, todavía no
     // existen en el DOM y el override se pierde silenciosamente).
-    overrides.customElements.forEach(function (data) {
+    activeOverrides().customElements.forEach(function (data) {
       insertCustomElement(data, true);
     });
-    Object.keys(overrides.items).forEach(function (id) {
+    Object.keys(activeOverrides().items).forEach(function (id) {
       var el = findByStableId(id);
-      if (el) applyItemData(el, overrides.items[id]);
+      if (el) applyItemData(el, activeOverrides().items[id]);
     });
   }
 
   function applyFrameHeightOverrides() {
-    Object.keys(overrides.frameHeights).forEach(function (scalerId) {
+    Object.keys(activeOverrides().frameHeights).forEach(function (scalerId) {
       var scaler = findScalerById(scalerId);
-      if (scaler) scaler.dataset.frameHeight = overrides.frameHeights[scalerId];
+      if (scaler) scaler.dataset.frameHeight = activeOverrides().frameHeights[scalerId];
     });
     var spacer = document.getElementById("s2-edit-spacer");
-    if (spacer && overrides.cardSpacer) spacer.style.height = overrides.cardSpacer + "px";
+    if (spacer && activeOverrides().cardSpacer) spacer.style.height = activeOverrides().cardSpacer + "px";
     if (window.scaleAllFrames) window.scaleAllFrames();
   }
 
@@ -221,7 +275,7 @@
       var currentSpacer = parseFloat(spacer.style.height) || 0;
       var nextSpacer = Math.max(0, currentSpacer + delta);
       spacer.style.height = nextSpacer + "px";
-      overrides.cardSpacer = nextSpacer;
+      activeOverrides().cardSpacer = nextSpacer;
     }
 
     var current = parseFloat(scaler.dataset.frameHeight) || 0;
@@ -231,7 +285,7 @@
     if (state.selected) positionToolbar(state.selected);
 
     var scalerId = scaler.id === "invitation-scaler" ? "invitation-scaler" : "envelope-scaler";
-    overrides.frameHeights[scalerId] = next;
+    activeOverrides().frameHeights[scalerId] = next;
     saveOverrides();
   }
 
@@ -400,7 +454,7 @@
 
   function resetElement(el) {
     var id = stableId(el);
-    delete overrides.items[id];
+    delete activeOverrides().items[id];
     saveOverrides();
     window.location.reload();
   }
@@ -636,7 +690,7 @@
   function insertCustomElement(data, skipSave) {
     var el = data.type === "text" ? insertCustomText(data) : insertCustomImage(data);
     if (el && !skipSave) {
-      overrides.customElements.push(data);
+      activeOverrides().customElements.push(data);
       saveOverrides();
     }
     return el;
@@ -708,10 +762,10 @@
 
   function removeCustomElement(el) {
     var id = el.dataset.editCustomId;
-    overrides.customElements = overrides.customElements.filter(function (item) {
+    activeOverrides().customElements = activeOverrides().customElements.filter(function (item) {
       return item.id !== id;
     });
-    delete overrides.items[id];
+    delete activeOverrides().items[id];
     saveOverrides();
     el.remove();
     deselect();
@@ -788,6 +842,10 @@
     panel.className = "edit-panel";
     panel.style.display = "none";
 
+    panel.appendChild(makePanelButton(
+      isMobilePreviewOn() ? "🖥 Ver como desktop" : "📱 Ver como mobile",
+      toggleMobilePreview
+    ));
     panel.appendChild(makePanelButton("＋ Agregar imagen", openImagePicker));
     panel.appendChild(makePanelButton("＋ Agregar texto", openTextAdder));
     panel.appendChild(makePanelButton("↕＋ Más espacio abajo", function () { bumpFrameHeight(FRAME_HEIGHT_STEP); }));
@@ -818,6 +876,28 @@
     fabEl.classList.toggle("is-active", state.active);
     panelEl.style.display = state.active ? "flex" : "none";
     if (!state.active) deselect();
+    try {
+      if (state.active) window.sessionStorage.setItem(EDIT_MODE_ACTIVE_KEY, "1");
+      else window.sessionStorage.removeItem(EDIT_MODE_ACTIVE_KEY);
+    } catch (e) { /* no-op */ }
+  }
+
+  // Simula un ancho de celular para poder editar la versión mobile desde
+  // la compu, sin depender de tocar con el dedo en un teléfono real. Se
+  // guarda en sessionStorage y se recarga la página para que main.js
+  // vuelva a calcular todo con el ancho simulado desde el principio (ver
+  // el bootstrap al comienzo de este archivo).
+  function toggleMobilePreview() {
+    try {
+      if (isMobilePreviewOn()) {
+        window.sessionStorage.removeItem(MOBILE_PREVIEW_KEY);
+      } else {
+        window.sessionStorage.setItem(MOBILE_PREVIEW_KEY, "1");
+      }
+      // Seguir en modo edición después de recargar, para no perder el hilo.
+      window.sessionStorage.setItem(EDIT_MODE_ACTIVE_KEY, "1");
+    } catch (e) { /* no-op */ }
+    window.location.reload();
   }
 
   function resetAll() {
@@ -932,8 +1012,8 @@
 
   function openHiddenList() {
     openModal("Elementos ocultos", function (modal) {
-      var hiddenIds = Object.keys(overrides.items).filter(function (id) {
-        return overrides.items[id].hidden;
+      var hiddenIds = Object.keys(activeOverrides().items).filter(function (id) {
+        return activeOverrides().items[id].hidden;
       });
       if (hiddenIds.length === 0) {
         var p = document.createElement("p");
@@ -954,7 +1034,7 @@
         showBtn.addEventListener("click", function () {
           var el = findByStableId(id);
           if (el) el.style.display = "";
-          delete overrides.items[id].hidden;
+          delete activeOverrides().items[id].hidden;
           saveOverrides();
           row.remove();
         });
@@ -1041,9 +1121,16 @@
       applyBtn.addEventListener("click", function () {
         try {
           var parsed = JSON.parse(textarea.value);
-          if (!parsed.items) parsed.items = {};
-          if (!parsed.customElements) parsed.customElements = [];
-          overrides = parsed;
+          if (parsed.desktop || parsed.mobile) {
+            overrides = {
+              desktop: normalizeDeviceOverrides(parsed.desktop),
+              mobile: normalizeDeviceOverrides(parsed.mobile)
+            };
+          } else {
+            // JSON viejo (de antes de separar desktop/mobile): se aplica
+            // tal cual a desktop, mobile queda como estaba.
+            overrides.desktop = normalizeDeviceOverrides(parsed);
+          }
           saveOverrides();
           close();
           window.location.reload();
@@ -1088,6 +1175,12 @@
       var observer = new MutationObserver(collectEditableElements);
       observer.observe(invitationScreen, { attributes: true, attributeFilter: ["class"] });
     }
+
+    // Si el modo edición estaba prendido antes de recargar (por ejemplo,
+    // al tocar "Ver como mobile"), seguir donde se dejó.
+    try {
+      if (window.sessionStorage.getItem(EDIT_MODE_ACTIVE_KEY) === "1") toggleEditMode();
+    } catch (e) { /* no-op */ }
   }
 
   if (document.readyState === "loading") {
