@@ -1,0 +1,703 @@
+// ---------- Modo edición visual en vivo ----------
+// Herramienta de trabajo para ajustar el diseño a mano (texto, tamaños,
+// posición, imágenes) directamente sobre la página. Todo se guarda en
+// localStorage del navegador donde se edita (no se publica solo). El
+// flujo real es: se edita acá -> "Exportar cambios" -> se manda el JSON
+// -> se aplica a mano en el código y se hace deploy. No toca la lógica
+// de main.js, config.js ni guests.js: solo superpone overrides de estilo
+// y contenido después de que la página ya se renderizó normalmente.
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "xv-edit-overrides";
+
+  // Clases de los elementos que se pueden seleccionar/editar. Cada uno ya
+  // tiene una clase propia y única en style.css, así que sirve como id
+  // estable entre recargas sin tener que tocar el HTML.
+  var EDITABLE_CLASSES = [
+    "crown-logo", "eyebrow", "script-names", "divider-vector", "envelope-img", "hint",
+    "s2-ribbon", "s2-flower", "s2-quote", "s2-divider-1", "s2-logo", "s2-photo", "s2-names",
+    "s2-divider-2", "s2-callout", "s2-divider-3", "s2-dt-bg", "s2-dt-flower",
+    "s2-dt-label", "s2-dt-value", "s2-dt-address", "s2-map-divider-top", "s2-map-link",
+    "s2-map-divider-bottom", "s2-dresscode", "s2-countdown-bg", "s2-countdown-overlay",
+    "s2-countdown-numbers", "s2-rsvp-bg", "s2-rsvp-button", "s2-footer-divider", "s2-footer-note"
+  ];
+
+  // Elementos cuyo texto lo arma JS a partir de config.js/guests.js (nombres
+  // de invitados, fecha, cuenta regresiva, etc). Se pueden mover/agrandar,
+  // pero no tiene sentido "editar el texto" a mano porque se pisa con cada
+  // invitado/recarga.
+  var DYNAMIC_TEXT_IDS = [
+    "guest-names-envelope", "guest-names-invitation", "event-date", "event-time",
+    "event-venue", "event-address", "countdown-days", "countdown-hours",
+    "countdown-minutes", "countdown-seconds"
+  ];
+  // Elementos que son contenedores de otras piezas (imagen + texto): no
+  // conviene volverlos contentEditable directo.
+  var NO_TEXT_EDIT_CLASSES = ["s2-map-link"];
+
+  // Imágenes disponibles en /images para el panel de "agregar imagen".
+  var AVAILABLE_IMAGES = [
+    "bg-envelope.jpg", "crown-logo.png", "divider.png", "dresscode.png", "envelope.png",
+    "photo-placeholder.svg", "screen2-bg.jpg", "screen2-card.jpg", "screen2-countdown-bg.jpg",
+    "screen2-countdown-overlay.png", "screen2-datetime-bg.png", "screen2-divider-1.png",
+    "screen2-divider-2.png", "screen2-divider-3.png", "screen2-flower.png",
+    "screen2-lace-fixed.png", "screen2-logo.png", "screen2-map-divider-bottom.png",
+    "screen2-map-divider-top.png", "screen2-map.png", "screen2-photo.gif",
+    "screen2-ribbon.png", "screen2-rsvp-bg.png"
+  ];
+
+  var TEXT_TAGS = ["P", "H1", "H2"];
+
+  var overrides = loadOverrides();
+  var state = { active: false, selected: null };
+  var toolbarEl = null;
+  var customCounter = 0;
+
+  function loadOverrides() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [] };
+      if (!parsed.items) parsed.items = {};
+      if (!parsed.customElements) parsed.customElements = [];
+      return parsed;
+    } catch (e) {
+      return { items: {}, customElements: [] };
+    }
+  }
+
+  function saveOverrides() {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+    } catch (e) {
+      // localStorage lleno o bloqueado: no hay mucho más para hacer acá.
+    }
+  }
+
+  // ---------- Identificación estable de elementos ----------
+
+  function stableId(el) {
+    if (el.dataset.editCustomId) return el.dataset.editCustomId;
+    if (el.id) return "id:" + el.id;
+    var classes = Array.prototype.slice.call(el.classList).filter(function (c) {
+      return EDITABLE_CLASSES.indexOf(c) !== -1;
+    });
+    return "cls:" + classes.join(".");
+  }
+
+  function findByStableId(id) {
+    if (id.indexOf("custom-") === 0) {
+      return document.querySelector('[data-edit-custom-id="' + id + '"]');
+    }
+    if (id.indexOf("id:") === 0) return document.getElementById(id.slice(3));
+    if (id.indexOf("cls:") === 0) {
+      var classes = id.slice(4).split(".");
+      return document.querySelector("." + classes.join("."));
+    }
+    return null;
+  }
+
+  // ---------- Escala del frame (para convertir px de pantalla a px de diseño) ----------
+
+  function getFrameScale(el) {
+    var frame = el.closest(".frame");
+    if (!frame) return 1;
+    var t = window.getComputedStyle(frame).transform;
+    if (!t || t === "none") return 1;
+    try {
+      var m = new DOMMatrix(t);
+      return m.a || 1;
+    } catch (e) {
+      return 1;
+    }
+  }
+
+  // ---------- Overrides: aplicar / guardar ----------
+
+  function applyItemData(el, data) {
+    if (!data) return;
+    if (data.hidden) el.style.display = "none";
+    if (data.left != null) el.style.left = data.left + "px";
+    if (data.top != null) el.style.top = data.top + "px";
+    if (data.fontSize != null) el.style.fontSize = data.fontSize + "px";
+    if (data.letterSpacing != null) el.style.letterSpacing = data.letterSpacing + "px";
+    if (data.width != null) el.style.width = data.width + "px";
+    if (data.marginTop != null) el.style.marginTop = data.marginTop + "px";
+    if (data.html != null) el.innerHTML = data.html;
+  }
+
+  function updateOverride(el, patch) {
+    var id = stableId(el);
+    if (!id) return;
+    if (!overrides.items[id]) overrides.items[id] = {};
+    Object.keys(patch).forEach(function (k) {
+      overrides.items[id][k] = patch[k];
+    });
+    saveOverrides();
+  }
+
+  function applyStoredOverrides() {
+    Object.keys(overrides.items).forEach(function (id) {
+      var el = findByStableId(id);
+      if (el) applyItemData(el, overrides.items[id]);
+    });
+    overrides.customElements.forEach(function (data) {
+      insertCustomImage(data, true);
+    });
+  }
+
+  // ---------- Selección + toolbar flotante ----------
+
+  function isTextEditable(el) {
+    if (NO_TEXT_EDIT_CLASSES.some(function (c) { return el.classList.contains(c); })) return false;
+    if (el.id && DYNAMIC_TEXT_IDS.indexOf(el.id) !== -1) return false;
+    return TEXT_TAGS.indexOf(el.tagName) !== -1 ||
+      (el.tagName === "A" && el.classList.contains("s2-rsvp-button"));
+  }
+
+  function selectElement(el) {
+    if (state.selected && state.selected !== el) {
+      state.selected.classList.remove("edit-selected");
+    }
+    state.selected = el;
+    el.classList.add("edit-selected");
+    showToolbar(el);
+  }
+
+  function deselect() {
+    if (state.selected) state.selected.classList.remove("edit-selected");
+    state.selected = null;
+    hideToolbar();
+  }
+
+  function makeToolbarButton(label, title, handler) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.title = title;
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      handler();
+    });
+    return btn;
+  }
+
+  function showToolbar(el) {
+    hideToolbar();
+    toolbarEl = document.createElement("div");
+    toolbarEl.className = "edit-toolbar";
+
+    var isImg = el.tagName === "IMG";
+    var isFlowImg = isImg && !el.classList.contains("abs");
+    var textEditable = isTextEditable(el);
+
+    if (textEditable) {
+      toolbarEl.appendChild(makeToolbarButton("A−", "Achicar texto", function () { bumpFontSize(el, -4); }));
+      toolbarEl.appendChild(makeToolbarButton("A+", "Agrandar texto", function () { bumpFontSize(el, 4); }));
+      toolbarEl.appendChild(makeToolbarButton("␣−", "Menos espaciado entre letras", function () { bumpLetterSpacing(el, -1); }));
+      toolbarEl.appendChild(makeToolbarButton("␣+", "Más espaciado entre letras", function () { bumpLetterSpacing(el, 1); }));
+      toolbarEl.appendChild(sep());
+      toolbarEl.appendChild(makeToolbarButton("✎", "Editar texto (doble click también sirve)", function () { startTextEdit(el); }));
+    }
+
+    if (isImg) {
+      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar", function () { bumpWidth(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar", function () { bumpWidth(el, 20); }));
+    }
+
+    if (isFlowImg) {
+      toolbarEl.appendChild(sep());
+      toolbarEl.appendChild(makeToolbarButton("↕−", "Menos espacio arriba", function () { bumpMarginTop(el, -10); }));
+      toolbarEl.appendChild(makeToolbarButton("↕+", "Más espacio arriba", function () { bumpMarginTop(el, 10); }));
+    }
+
+    toolbarEl.appendChild(sep());
+    toolbarEl.appendChild(makeToolbarButton("↩", "Restaurar este elemento a como estaba", function () { resetElement(el); }));
+
+    var isCustom = el.classList.contains("edit-custom");
+    var delBtn = makeToolbarButton("🗑", isCustom ? "Eliminar imagen agregada" : "Ocultar elemento", function () {
+      if (isCustom) removeCustomElement(el);
+      else hideElement(el);
+    });
+    delBtn.classList.add("edit-danger");
+    toolbarEl.appendChild(delBtn);
+
+    document.body.appendChild(toolbarEl);
+    positionToolbar(el);
+  }
+
+  function sep() {
+    var s = document.createElement("span");
+    s.className = "edit-toolbar-sep";
+    return s;
+  }
+
+  function hideToolbar() {
+    if (toolbarEl && toolbarEl.parentNode) toolbarEl.parentNode.removeChild(toolbarEl);
+    toolbarEl = null;
+  }
+
+  function positionToolbar(el) {
+    if (!toolbarEl) return;
+    var rect = el.getBoundingClientRect();
+    var top = rect.top - 40;
+    if (top < 4) top = rect.bottom + 8;
+    var left = Math.max(4, Math.min(rect.left, window.innerWidth - 220));
+    toolbarEl.style.top = top + "px";
+    toolbarEl.style.left = left + "px";
+  }
+
+  // ---------- Acciones de la toolbar ----------
+
+  function bumpFontSize(el, delta) {
+    var current = parseFloat(window.getComputedStyle(el).fontSize) || 16;
+    var next = Math.max(8, current + delta);
+    el.style.fontSize = next + "px";
+    updateOverride(el, { fontSize: next });
+    positionToolbar(el);
+  }
+
+  function bumpLetterSpacing(el, delta) {
+    var current = parseFloat(window.getComputedStyle(el).letterSpacing) || 0;
+    var next = current + delta;
+    el.style.letterSpacing = next + "px";
+    updateOverride(el, { letterSpacing: next });
+  }
+
+  function bumpWidth(el, delta) {
+    var current = el.getBoundingClientRect().width / getFrameScale(el);
+    var next = Math.max(20, current + delta);
+    el.style.width = next + "px";
+    updateOverride(el, { width: next });
+    positionToolbar(el);
+  }
+
+  function bumpMarginTop(el, delta) {
+    var current = parseFloat(window.getComputedStyle(el).marginTop) || 0;
+    var next = Math.max(-2000, current + delta);
+    el.style.marginTop = next + "px";
+    updateOverride(el, { marginTop: next });
+    positionToolbar(el);
+  }
+
+  function hideElement(el) {
+    el.style.display = "none";
+    updateOverride(el, { hidden: true });
+    deselect();
+  }
+
+  function resetElement(el) {
+    var id = stableId(el);
+    delete overrides.items[id];
+    saveOverrides();
+    window.location.reload();
+  }
+
+  function startTextEdit(el) {
+    el.setAttribute("contenteditable", "true");
+    el.classList.add("edit-text-active");
+    el.focus();
+
+    function onBlur() {
+      el.removeAttribute("contenteditable");
+      el.classList.remove("edit-text-active");
+      updateOverride(el, { html: el.innerHTML });
+      el.removeEventListener("blur", onBlur);
+    }
+    el.addEventListener("blur", onBlur);
+  }
+
+  // ---------- Selección + arrastre ----------
+
+  function onPointerDown(e) {
+    if (!state.active) return;
+    var el = e.currentTarget;
+    if (el.isContentEditable) return;
+    e.preventDefault();
+    e.stopPropagation();
+    selectElement(el);
+
+    var startX = e.clientX;
+    var startY = e.clientY;
+    var scale = getFrameScale(el);
+    var startLeft = parseFloat(window.getComputedStyle(el).left) || 0;
+    var startTop = parseFloat(window.getComputedStyle(el).top) || 0;
+    var moved = false;
+    var pointerId = e.pointerId;
+
+    try { el.setPointerCapture(pointerId); } catch (err) { /* no-op */ }
+
+    function onMove(ev) {
+      var dx = (ev.clientX - startX) / scale;
+      var dy = (ev.clientY - startY) / scale;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+      if (!moved) return;
+      el.style.left = (startLeft + dx) + "px";
+      el.style.top = (startTop + dy) + "px";
+      positionToolbar(el);
+    }
+
+    function onUp() {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", onUp);
+      try { el.releasePointerCapture(pointerId); } catch (err) { /* no-op */ }
+      if (moved) {
+        updateOverride(el, {
+          left: parseFloat(el.style.left),
+          top: parseFloat(el.style.top)
+        });
+      }
+    }
+
+    document.addEventListener("pointermove", onMove);
+    document.addEventListener("pointerup", onUp);
+  }
+
+  function onDblClick(e) {
+    if (!state.active) return;
+    var el = e.currentTarget;
+    if (!isTextEditable(el)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    selectElement(el);
+    startTextEdit(el);
+  }
+
+  function attachHandlers(el) {
+    el.classList.add("edit-target");
+    el.addEventListener("pointerdown", onPointerDown);
+    el.addEventListener("dblclick", onDblClick);
+  }
+
+  function collectEditableElements() {
+    var selector = EDITABLE_CLASSES.map(function (c) { return "." + c; }).join(",");
+    var found = document.querySelectorAll(selector);
+    found.forEach(function (el) {
+      if (!el.classList.contains("edit-target")) attachHandlers(el);
+    });
+  }
+
+  // ---------- Imágenes agregadas a mano ----------
+
+  function insertCustomImage(data, skipSave) {
+    var container = data.screen === "envelope"
+      ? document.getElementById("envelope-frame")
+      : document.querySelector("#invitation-frame .s2-card");
+    if (!container) return null;
+
+    var img = document.createElement("img");
+    img.src = "images/" + data.src;
+    img.alt = "";
+    img.className = "abs edit-custom";
+    img.dataset.editCustomId = data.id;
+    img.style.left = data.left + "px";
+    img.style.top = data.top + "px";
+    img.style.width = data.width + "px";
+    if (data.hidden) img.style.display = "none";
+
+    container.appendChild(img);
+    attachHandlers(img);
+
+    if (!skipSave) {
+      overrides.customElements.push(data);
+      saveOverrides();
+    }
+    return img;
+  }
+
+  function removeCustomElement(el) {
+    var id = el.dataset.editCustomId;
+    overrides.customElements = overrides.customElements.filter(function (item) {
+      return item.id !== id;
+    });
+    saveOverrides();
+    el.remove();
+    deselect();
+  }
+
+  function addImageFromPicker(filename) {
+    customCounter += 1;
+    var envelopeVisible = document.getElementById("screen-envelope").classList.contains("active");
+    var data = {
+      id: "custom-" + Date.now() + "-" + customCounter,
+      src: filename,
+      screen: envelopeVisible ? "envelope" : "invitation",
+      left: 100,
+      top: 100,
+      width: 200
+    };
+    var img = insertCustomImage(data);
+    if (img) selectElement(img);
+  }
+
+  // ---------- Panel de control / export / import ----------
+
+  function buildFab() {
+    var fab = document.createElement("button");
+    fab.type = "button";
+    fab.className = "edit-fab";
+    fab.title = "Modo edición";
+    fab.textContent = "✎";
+    fab.addEventListener("click", function (e) {
+      e.stopPropagation();
+      toggleEditMode();
+    });
+    document.body.appendChild(fab);
+    return fab;
+  }
+
+  function buildPanel() {
+    var panel = document.createElement("div");
+    panel.className = "edit-panel";
+    panel.style.display = "none";
+
+    panel.appendChild(makePanelButton("＋ Agregar imagen", openImagePicker));
+    panel.appendChild(makePanelButton("👁 Ver ocultos", openHiddenList));
+    panel.appendChild(makePanelButton("⭳ Exportar cambios", openExportModal));
+    panel.appendChild(makePanelButton("⭱ Importar cambios", openImportModal));
+    panel.appendChild(makePanelButton("⟲ Reiniciar todo", resetAll));
+
+    document.body.appendChild(panel);
+    return panel;
+  }
+
+  function makePanelButton(label, handler) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      handler();
+    });
+    return btn;
+  }
+
+  function toggleEditMode() {
+    state.active = !state.active;
+    document.body.classList.toggle("edit-mode-active", state.active);
+    fabEl.classList.toggle("is-active", state.active);
+    panelEl.style.display = state.active ? "flex" : "none";
+    if (!state.active) deselect();
+  }
+
+  function resetAll() {
+    if (!window.confirm("¿Borrar todos los cambios guardados en este navegador?")) return;
+    window.localStorage.removeItem(STORAGE_KEY);
+    window.location.reload();
+  }
+
+  // ---------- Modal genérico ----------
+
+  function openModal(titleText, buildBody) {
+    var overlay = document.createElement("div");
+    overlay.className = "edit-overlay";
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    var modal = document.createElement("div");
+    modal.className = "edit-modal";
+    var h3 = document.createElement("h3");
+    h3.textContent = titleText;
+    modal.appendChild(h3);
+    buildBody(modal, function () { overlay.remove(); });
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function openImagePicker() {
+    openModal("Agregar imagen desde /images", function (modal, close) {
+      var grid = document.createElement("div");
+      grid.className = "edit-picker-grid";
+      AVAILABLE_IMAGES.forEach(function (filename) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        var img = document.createElement("img");
+        img.src = "images/" + filename;
+        img.alt = filename;
+        var span = document.createElement("span");
+        span.textContent = filename;
+        btn.appendChild(img);
+        btn.appendChild(span);
+        btn.addEventListener("click", function () {
+          addImageFromPicker(filename);
+          close();
+        });
+        grid.appendChild(btn);
+      });
+      modal.appendChild(grid);
+    });
+  }
+
+  function openHiddenList() {
+    openModal("Elementos ocultos", function (modal) {
+      var hiddenIds = Object.keys(overrides.items).filter(function (id) {
+        return overrides.items[id].hidden;
+      });
+      if (hiddenIds.length === 0) {
+        var p = document.createElement("p");
+        p.textContent = "No hay elementos ocultos.";
+        modal.appendChild(p);
+        return;
+      }
+      var list = document.createElement("div");
+      list.className = "edit-hidden-list";
+      hiddenIds.forEach(function (id) {
+        var row = document.createElement("div");
+        row.className = "edit-hidden-row";
+        var label = document.createElement("span");
+        label.textContent = id.replace(/^cls:/, "").replace(/^id:/, "");
+        var showBtn = document.createElement("button");
+        showBtn.type = "button";
+        showBtn.textContent = "Mostrar";
+        showBtn.addEventListener("click", function () {
+          var el = findByStableId(id);
+          if (el) el.style.display = "";
+          delete overrides.items[id].hidden;
+          saveOverrides();
+          row.remove();
+        });
+        row.appendChild(label);
+        row.appendChild(showBtn);
+        list.appendChild(row);
+      });
+      modal.appendChild(list);
+    });
+  }
+
+  function openExportModal() {
+    openModal("Exportar cambios", function (modal) {
+      var json = JSON.stringify(overrides, null, 2);
+      var textarea = document.createElement("textarea");
+      textarea.readOnly = true;
+      textarea.value = json;
+      modal.appendChild(textarea);
+
+      var actions = document.createElement("div");
+      actions.className = "edit-modal-actions";
+
+      var copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.textContent = "Copiar";
+      copyBtn.addEventListener("click", function () {
+        textarea.select();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(json).catch(function () {
+            document.execCommand("copy");
+          });
+        } else {
+          document.execCommand("copy");
+        }
+        copyBtn.textContent = "¡Copiado!";
+        window.setTimeout(function () { copyBtn.textContent = "Copiar"; }, 1500);
+      });
+
+      var downloadBtn = document.createElement("button");
+      downloadBtn.type = "button";
+      downloadBtn.textContent = "Descargar .json";
+      downloadBtn.addEventListener("click", function () {
+        var blob = new Blob([json], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "xv-matilda-cambios.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      actions.appendChild(copyBtn);
+      actions.appendChild(downloadBtn);
+      modal.appendChild(actions);
+    });
+  }
+
+  function openImportModal() {
+    openModal("Importar cambios", function (modal, close) {
+      var textarea = document.createElement("textarea");
+      textarea.placeholder = "Pegá acá el JSON exportado...";
+      modal.appendChild(textarea);
+
+      var fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = "application/json";
+      fileInput.style.marginBottom = "10px";
+      fileInput.addEventListener("change", function () {
+        var file = fileInput.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () { textarea.value = String(reader.result); };
+        reader.readAsText(file);
+      });
+      modal.insertBefore(fileInput, textarea);
+
+      var actions = document.createElement("div");
+      actions.className = "edit-modal-actions";
+      var applyBtn = document.createElement("button");
+      applyBtn.type = "button";
+      applyBtn.textContent = "Aplicar";
+      applyBtn.addEventListener("click", function () {
+        try {
+          var parsed = JSON.parse(textarea.value);
+          if (!parsed.items) parsed.items = {};
+          if (!parsed.customElements) parsed.customElements = [];
+          overrides = parsed;
+          saveOverrides();
+          close();
+          window.location.reload();
+        } catch (e) {
+          window.alert("El JSON no es válido.");
+        }
+      });
+      actions.appendChild(applyBtn);
+      modal.appendChild(actions);
+    });
+  }
+
+  // ---------- Init ----------
+
+  var fabEl = null;
+  var panelEl = null;
+
+  function onGlobalClick(e) {
+    if (!state.active) return;
+    if (e.target.closest(".edit-target, .edit-toolbar, .edit-fab, .edit-panel, .edit-overlay")) return;
+    deselect();
+  }
+
+  function init() {
+    applyStoredOverrides();
+    collectEditableElements();
+    fabEl = buildFab();
+    panelEl = buildPanel();
+    document.addEventListener("click", onGlobalClick);
+    window.addEventListener("scroll", function () {
+      if (state.selected) positionToolbar(state.selected);
+    }, true);
+    window.addEventListener("resize", function () {
+      if (state.selected) positionToolbar(state.selected);
+    });
+
+    // Cuando se abre el sobre aparecen recién ahí los elementos de la
+    // pantalla 2: hay que engancharlos también.
+    var invitationScreen = document.getElementById("screen-invitation");
+    if (invitationScreen) {
+      var observer = new MutationObserver(collectEditableElements);
+      observer.observe(invitationScreen, { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  window.isXvEditModeActive = function () {
+    return state.active;
+  };
+})();

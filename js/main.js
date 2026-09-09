@@ -124,6 +124,7 @@ let envelopeOpened = false;
 
 function openEnvelope() {
   if (envelopeOpened) return;
+  if (window.isXvEditModeActive && window.isXvEditModeActive()) return;
   envelopeOpened = true;
 
   const envelopeScreen = document.getElementById("screen-envelope");

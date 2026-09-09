@@ -1,0 +1,240 @@
+/* ---------- Modo edición visual ---------- */
+/* Todo lo de este archivo vive por encima del diseño real (z-index alto)
+   y solo se activa cuando el botón flotante está prendido. No afecta el
+   layout normal que ven los invitados. */
+
+.edit-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 100000;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(101, 75, 56, 0.55);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  opacity: 0.55;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.edit-fab:hover {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.edit-fab.is-active {
+  opacity: 1;
+  background: #a9822c;
+}
+
+body.edit-mode-active .edit-target {
+  cursor: grab;
+}
+
+body.edit-mode-active .edit-target:hover {
+  outline: 1px dashed rgba(169, 130, 44, 0.7);
+  outline-offset: 2px;
+}
+
+.edit-target.edit-selected {
+  outline: 2px solid #a9822c !important;
+  outline-offset: 2px;
+}
+
+.edit-target[contenteditable="true"] {
+  cursor: text;
+  outline: 2px solid #4a90d9 !important;
+  outline-offset: 2px;
+}
+
+.edit-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 80px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(247, 241, 230, 0.97);
+  border: 1px solid var(--border, #d9c9a8);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  font-family: sans-serif;
+  font-size: 13px;
+}
+
+.edit-panel button {
+  font-family: sans-serif;
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border, #d9c9a8);
+  background: #fff;
+  color: var(--ink, #654b38);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.edit-panel button:hover {
+  background: #f0e6d6;
+}
+
+.edit-toolbar {
+  position: fixed;
+  z-index: 100001;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(40, 30, 20, 0.92);
+  border-radius: 8px;
+  padding: 5px 6px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+  font-family: sans-serif;
+}
+
+.edit-toolbar button {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 5px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.edit-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.edit-toolbar button.edit-danger:hover {
+  background: #c0392b;
+}
+
+.edit-toolbar .edit-toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 2px;
+}
+
+.edit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.edit-modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  font-family: sans-serif;
+  color: #333;
+}
+
+.edit-modal h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--ink, #654b38);
+}
+
+.edit-modal textarea {
+  width: 100%;
+  height: 220px;
+  font-family: monospace;
+  font-size: 12px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.edit-modal .edit-modal-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.edit-modal .edit-modal-actions button {
+  font-family: sans-serif;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f7f1e6;
+  cursor: pointer;
+}
+
+.edit-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+.edit-picker-grid button {
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.edit-picker-grid img {
+  width: 100%;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+}
+
+.edit-picker-grid span {
+  display: block;
+  font-size: 9px;
+  word-break: break-all;
+  color: #666;
+  margin-top: 2px;
+}
+
+.edit-hidden-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.edit-hidden-list .edit-hidden-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+.edit-hidden-list .edit-hidden-row button {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background: #f7f1e6;
+  cursor: pointer;
+  white-space: nowrap;
+}
