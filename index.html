@@ -194,6 +194,13 @@
                  hace falta este margen extra antes de que termine la
                  tarjeta. -->
             <div class="s2-footer-spacer" aria-hidden="true"></div>
+
+            <!-- Espaciador vacío que el modo edición estira/achica con
+                 "Más/Menos espacio abajo": al ser un elemento en flujo
+                 (no "abs"), sí hace crecer la tarjeta blanca de verdad,
+                 a diferencia de solo cambiar el alto del "lienzo" de
+                 diseño (que no mueve el borde real de la tarjeta). -->
+            <div class="s2-edit-spacer" id="s2-edit-spacer" aria-hidden="true"></div>
           </div>
         </div>
       </div>

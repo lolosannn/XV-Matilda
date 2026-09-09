@@ -751,6 +751,12 @@ body {
   height: 190px;
 }
 
+.s2-edit-spacer {
+  display: block;
+  width: 100%;
+  height: 0;
+}
+
 .lace-fixed {
   left: 50%;
   top: 0;

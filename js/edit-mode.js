@@ -75,13 +75,14 @@
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
       var parsed = raw ? JSON.parse(raw) : null;
-      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [], frameHeights: {} };
+      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [], frameHeights: {}, cardSpacer: 0 };
       if (!parsed.items) parsed.items = {};
       if (!parsed.customElements) parsed.customElements = [];
       if (!parsed.frameHeights) parsed.frameHeights = {};
+      if (!parsed.cardSpacer) parsed.cardSpacer = 0;
       return parsed;
     } catch (e) {
-      return { items: {}, customElements: [], frameHeights: {} };
+      return { items: {}, customElements: [], frameHeights: {}, cardSpacer: 0 };
     }
   }
 
@@ -175,6 +176,8 @@
       var scaler = findScalerById(scalerId);
       if (scaler) scaler.dataset.frameHeight = overrides.frameHeights[scalerId];
     });
+    var spacer = document.getElementById("s2-edit-spacer");
+    if (spacer && overrides.cardSpacer) spacer.style.height = overrides.cardSpacer + "px";
     if (window.scaleAllFrames) window.scaleAllFrames();
   }
 
@@ -199,6 +202,20 @@
   function bumpFrameHeight(delta) {
     var scaler = getActiveContentScaler();
     if (!scaler) return;
+
+    // La tarjeta blanca de pantalla 2 tiene overflow:hidden y su alto real
+    // lo define su propio contenido en flujo (no el "lienzo" de diseño).
+    // Para que de verdad se alargue hay que crecer un espaciador real
+    // adentro de la tarjeta, además del lienzo (si no, lo que se gana acá
+    // queda recortado por la tarjeta).
+    var spacer = document.getElementById("s2-edit-spacer");
+    if (spacer) {
+      var currentSpacer = parseFloat(spacer.style.height) || 0;
+      var nextSpacer = Math.max(0, currentSpacer + delta);
+      spacer.style.height = nextSpacer + "px";
+      overrides.cardSpacer = nextSpacer;
+    }
+
     var current = parseFloat(scaler.dataset.frameHeight) || 0;
     var next = Math.max(500, current + delta);
     scaler.dataset.frameHeight = next;
@@ -452,6 +469,15 @@
 
   function attachHandlers(el) {
     el.classList.add("edit-target");
+    // Los elementos "en flujo" (sin .abs, como el pie de página o el
+    // fondo de fecha/hora) no tienen position:absolute, así que left/top
+    // no les hace nada: arrastrarlos se veía como si no funcionara. Con
+    // position:relative sí se pueden correr visualmente y a la vez siguen
+    // ocupando su lugar en el flujo (o sea, la tarjeta se sigue estirando
+    // por ellos igual que antes).
+    if (!el.classList.contains("abs") && !el.style.position) {
+      el.style.position = "relative";
+    }
     el.addEventListener("pointerdown", onPointerDown);
     el.addEventListener("dblclick", onDblClick);
   }
@@ -489,7 +515,15 @@
     }
     var scale = getFrameScale(container);
     var height = container.getBoundingClientRect().height / scale;
-    return { left: 100, top: height + 40 };
+
+    // Si se estiró la tarjeta con "Más espacio abajo", ese espacio en
+    // blanco es lo último que se sumó al alto de la tarjeta. Ubicar el
+    // elemento nuevo en la mitad de esa zona (no pegado al final de todo)
+    // deja margen de sobra arriba y abajo para poder centrarlo en pantalla.
+    var spacer = document.getElementById("s2-edit-spacer");
+    var spacerHeight = spacer ? (parseFloat(spacer.style.height) || 0) : 0;
+    var top = spacerHeight > 80 ? height - spacerHeight / 2 : height + 40;
+    return { left: 100, top: top };
   }
 
   function insertCustomElement(data, skipSave) {
