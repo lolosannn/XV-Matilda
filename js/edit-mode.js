@@ -411,6 +411,85 @@
     el.addEventListener("blur", onBlur);
   }
 
+  // ---------- Líneas guía (para centrar/alinear al arrastrar) ----------
+
+  var GUIDE_TOLERANCE = 6; // px de pantalla
+  var guideVEl = null;
+  var guideHEl = null;
+
+  function ensureGuideEls() {
+    if (!guideVEl) {
+      guideVEl = document.createElement("div");
+      guideVEl.className = "edit-guide edit-guide-v";
+      document.body.appendChild(guideVEl);
+    }
+    if (!guideHEl) {
+      guideHEl = document.createElement("div");
+      guideHEl.className = "edit-guide edit-guide-h";
+      document.body.appendChild(guideHEl);
+    }
+  }
+
+  function hideGuides() {
+    if (guideVEl) guideVEl.style.display = "none";
+    if (guideHEl) guideHEl.style.display = "none";
+  }
+
+  // Junta, una sola vez al empezar a arrastrar, las cajas (en px de
+  // pantalla) contra las que se puede alinear: el centro del contenedor
+  // (tarjeta o sobre) y el resto de los elementos editables visibles de
+  // esa misma pantalla.
+  function getGuideTargets(el) {
+    var frame = el.closest(".frame");
+    var container = el.offsetParent || frame || el.parentElement;
+    var others = [];
+    if (frame) {
+      frame.querySelectorAll(".edit-target").forEach(function (other) {
+        if (other === el) return;
+        if (window.getComputedStyle(other).display === "none") return;
+        others.push(other.getBoundingClientRect());
+      });
+    }
+    return { containerRect: container.getBoundingClientRect(), others: others };
+  }
+
+  // Compara la caja actual del elemento arrastrado contra los objetivos y
+  // devuelve, si hay alguno a menos de GUIDE_TOLERANCE px, el mejor match
+  // por eje (para centrar, o alinear bordes con otro elemento).
+  function findGuideMatches(rect, targets) {
+    var centerX = rect.left + rect.width / 2;
+    var centerY = rect.top + rect.height / 2;
+    var vMatch = null;
+    var hMatch = null;
+
+    function considerV(dragX, refX) {
+      var diff = refX - dragX;
+      if (Math.abs(diff) <= GUIDE_TOLERANCE && (!vMatch || Math.abs(diff) < Math.abs(vMatch.diff))) {
+        vMatch = { screenX: refX, diff: diff };
+      }
+    }
+    function considerH(dragY, refY) {
+      var diff = refY - dragY;
+      if (Math.abs(diff) <= GUIDE_TOLERANCE && (!hMatch || Math.abs(diff) < Math.abs(hMatch.diff))) {
+        hMatch = { screenY: refY, diff: diff };
+      }
+    }
+
+    // La guía más importante: el centro del contenedor (tarjeta/sobre).
+    considerV(centerX, targets.containerRect.left + targets.containerRect.width / 2);
+
+    targets.others.forEach(function (o) {
+      considerV(rect.left, o.left);
+      considerV(centerX, o.left + o.width / 2);
+      considerV(rect.right, o.left + o.width);
+      considerH(rect.top, o.top);
+      considerH(centerY, o.top + o.height / 2);
+      considerH(rect.bottom, o.top + o.height);
+    });
+
+    return { vMatch: vMatch, hMatch: hMatch };
+  }
+
   // ---------- Selección + arrastre ----------
 
   function onPointerDown(e) {
@@ -428,6 +507,7 @@
     var startTop = parseFloat(window.getComputedStyle(el).top) || 0;
     var moved = false;
     var pointerId = e.pointerId;
+    var guideTargets = getGuideTargets(el);
 
     try { el.setPointerCapture(pointerId); } catch (err) { /* no-op */ }
 
@@ -438,6 +518,24 @@
       if (!moved) return;
       el.style.left = (startLeft + dx) + "px";
       el.style.top = (startTop + dy) + "px";
+
+      var matches = findGuideMatches(el.getBoundingClientRect(), guideTargets);
+      ensureGuideEls();
+      if (matches.vMatch) {
+        el.style.left = (parseFloat(el.style.left) + matches.vMatch.diff / scale) + "px";
+        guideVEl.style.left = matches.vMatch.screenX + "px";
+        guideVEl.style.display = "block";
+      } else {
+        guideVEl.style.display = "none";
+      }
+      if (matches.hMatch) {
+        el.style.top = (parseFloat(el.style.top) + matches.hMatch.diff / scale) + "px";
+        guideHEl.style.top = matches.hMatch.screenY + "px";
+        guideHEl.style.display = "block";
+      } else {
+        guideHEl.style.display = "none";
+      }
+
       positionToolbar(el);
     }
 
@@ -445,6 +543,7 @@
       document.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerup", onUp);
       try { el.releasePointerCapture(pointerId); } catch (err) { /* no-op */ }
+      hideGuides();
       if (moved) {
         updateOverride(el, {
           left: parseFloat(el.style.left),
@@ -540,7 +639,10 @@
     if (!container) return null;
 
     var img = document.createElement("img");
-    img.src = "images/" + data.src;
+    // Las fotos subidas desde el dispositivo quedan como data URL (no hay
+    // forma de escribir un archivo nuevo en /images sin que yo lo suba al
+    // código); las de la galería son un archivo real de esa carpeta.
+    img.src = data.src.indexOf("data:") === 0 ? data.src : "images/" + data.src;
     img.alt = "";
     img.className = "abs edit-custom";
     img.dataset.editCustomId = data.id;
@@ -619,6 +721,45 @@
       left: pos.left,
       top: pos.top,
       width: 200
+    };
+    var img = insertCustomElement(data);
+    if (img) revealNewElement(img);
+  }
+
+  // Achica la foto (lado más largo a maxDim) y la comprime a JPEG antes de
+  // guardarla en localStorage, para no llenar el almacenamiento del
+  // navegador con fotos de celular de varios MB cada una.
+  function resizeImageFile(file, maxDim, callback) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var w = Math.max(1, Math.round(img.width * scale));
+        var h = Math.max(1, Math.round(img.height * scale));
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        callback(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function addUploadedImage(dataUrl) {
+    customCounter += 1;
+    var screen = currentScreen();
+    var pos = defaultNewElementPosition(screen);
+    var data = {
+      type: "image",
+      id: "custom-" + Date.now() + "-" + customCounter,
+      src: dataUrl,
+      screen: screen,
+      left: pos.left,
+      top: pos.top,
+      width: 300
     };
     var img = insertCustomElement(data);
     if (img) revealNewElement(img);
@@ -738,7 +879,34 @@
   }
 
   function openImagePicker() {
-    openModal("Agregar imagen desde /images", function (modal, close) {
+    openModal("Agregar imagen", function (modal, close) {
+      var uploadLabel = document.createElement("label");
+      uploadLabel.textContent = "Subir una foto desde tu celular/PC:";
+      uploadLabel.style.display = "block";
+      uploadLabel.style.fontSize = "13px";
+      uploadLabel.style.margin = "0 0 6px";
+      modal.appendChild(uploadLabel);
+
+      var uploadInput = document.createElement("input");
+      uploadInput.type = "file";
+      uploadInput.accept = "image/*";
+      uploadInput.style.marginBottom = "16px";
+      uploadInput.addEventListener("change", function () {
+        var file = uploadInput.files[0];
+        if (!file) return;
+        resizeImageFile(file, 1200, function (dataUrl) {
+          addUploadedImage(dataUrl);
+          close();
+        });
+      });
+      modal.appendChild(uploadInput);
+
+      var galleryLabel = document.createElement("p");
+      galleryLabel.textContent = "…o elegí una de las que ya están en el sitio:";
+      galleryLabel.style.fontSize = "13px";
+      galleryLabel.style.margin = "0 0 8px";
+      modal.appendChild(galleryLabel);
+
       var grid = document.createElement("div");
       grid.className = "edit-picker-grid";
       AVAILABLE_IMAGES.forEach(function (filename) {
