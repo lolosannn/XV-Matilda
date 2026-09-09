@@ -64,7 +64,8 @@
     "crown-logo", "eyebrow", "script-names", "divider-vector", "envelope-img", "hint",
     "s2-ribbon", "s2-flower", "s2-quote", "s2-divider-1", "s2-logo", "s2-photo", "s2-names",
     "s2-divider-2", "s2-callout", "s2-divider-3", "s2-dt-bg", "s2-dt-flower",
-    "s2-dt-label", "s2-dt-value", "s2-dt-address", "s2-map-divider-top", "s2-map-link",
+    "s2-dt-label", "s2-dt-label--fecha", "s2-dt-label--horario", "s2-dt-label--lugar",
+    "s2-dt-value", "s2-dt-address", "s2-map-divider-top", "s2-map-link",
     "s2-map-divider-bottom", "s2-dresscode", "s2-countdown-bg", "s2-countdown-overlay",
     "s2-countdown-numbers", "s2-rsvp-bg", "s2-rsvp-button", "s2-footer-divider", "s2-footer-note"
   ];
