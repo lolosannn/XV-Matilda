@@ -49,6 +49,23 @@
 
   var TEXT_TAGS = ["P", "H1", "H2"];
 
+  // Únicas fuentes y colores que se pueden elegir para texto agregado a
+  // mano, para no salirse de la identidad visual ya cargada en la página.
+  var TEXT_FONTS = [
+    { label: "Serif", family: '"Libre Baskerville", serif', weight: "400", style: "normal" },
+    { label: "Serif negrita", family: '"Libre Baskerville", serif', weight: "700", style: "normal" },
+    { label: "Serif cursiva", family: '"Libre Baskerville", serif', weight: "400", style: "italic" },
+    { label: "Script", family: '"Pinyon Script", cursive', weight: "400", style: "normal" }
+  ];
+  var TEXT_COLORS = [
+    { label: "Marrón", value: "#654b38" },
+    { label: "Blanco", value: "#ffffff" },
+    { label: "Negro", value: "#000000" }
+  ];
+
+  // Cuánto crece/achica el largo de la tarjeta por click en "Más/Menos espacio".
+  var FRAME_HEIGHT_STEP = 200;
+
   var overrides = loadOverrides();
   var state = { active: false, selected: null };
   var toolbarEl = null;
@@ -58,12 +75,13 @@
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
       var parsed = raw ? JSON.parse(raw) : null;
-      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [] };
+      if (!parsed || typeof parsed !== "object") return { items: {}, customElements: [], frameHeights: {} };
       if (!parsed.items) parsed.items = {};
       if (!parsed.customElements) parsed.customElements = [];
+      if (!parsed.frameHeights) parsed.frameHeights = {};
       return parsed;
     } catch (e) {
-      return { items: {}, customElements: [] };
+      return { items: {}, customElements: [], frameHeights: {} };
     }
   }
 
@@ -125,6 +143,8 @@
     if (data.width != null) el.style.width = data.width + "px";
     if (data.marginTop != null) el.style.marginTop = data.marginTop + "px";
     if (data.html != null) el.innerHTML = data.html;
+    if (data.fontIndex != null) applyFontToElement(el, data.fontIndex);
+    if (data.colorIndex != null) applyColorToElement(el, data.colorIndex);
   }
 
   function updateOverride(el, patch) {
@@ -138,13 +158,56 @@
   }
 
   function applyStoredOverrides() {
+    // Los elementos agregados a mano hay que crearlos ANTES de intentar
+    // aplicarles su override de posición/texto/tamaño (si no, todavía no
+    // existen en el DOM y el override se pierde silenciosamente).
+    overrides.customElements.forEach(function (data) {
+      insertCustomElement(data, true);
+    });
     Object.keys(overrides.items).forEach(function (id) {
       var el = findByStableId(id);
       if (el) applyItemData(el, overrides.items[id]);
     });
-    overrides.customElements.forEach(function (data) {
-      insertCustomImage(data, true);
+  }
+
+  function applyFrameHeightOverrides() {
+    Object.keys(overrides.frameHeights).forEach(function (scalerId) {
+      var scaler = findScalerById(scalerId);
+      if (scaler) scaler.dataset.frameHeight = overrides.frameHeights[scalerId];
     });
+    if (window.scaleAllFrames) window.scaleAllFrames();
+  }
+
+  function findScalerById(scalerId) {
+    if (scalerId === "invitation-scaler") return document.getElementById("invitation-scaler");
+    if (scalerId === "envelope-scaler") {
+      var envelopeFrame = document.getElementById("envelope-frame");
+      return envelopeFrame ? envelopeFrame.closest(".frame-scaler") : null;
+    }
+    return null;
+  }
+
+  function getActiveContentScaler() {
+    var envelopeActive = document.getElementById("screen-envelope").classList.contains("active");
+    if (envelopeActive) {
+      var envelopeFrame = document.getElementById("envelope-frame");
+      return envelopeFrame ? envelopeFrame.closest(".frame-scaler") : null;
+    }
+    return document.getElementById("invitation-scaler");
+  }
+
+  function bumpFrameHeight(delta) {
+    var scaler = getActiveContentScaler();
+    if (!scaler) return;
+    var current = parseFloat(scaler.dataset.frameHeight) || 0;
+    var next = Math.max(500, current + delta);
+    scaler.dataset.frameHeight = next;
+    if (window.scaleAllFrames) window.scaleAllFrames();
+    if (state.selected) positionToolbar(state.selected);
+
+    var scalerId = scaler.id === "invitation-scaler" ? "invitation-scaler" : "envelope-scaler";
+    overrides.frameHeights[scalerId] = next;
+    saveOverrides();
   }
 
   // ---------- Selección + toolbar flotante ----------
@@ -190,6 +253,7 @@
 
     var isImg = el.tagName === "IMG";
     var isFlowImg = isImg && !el.classList.contains("abs");
+    var isCustomText = el.classList.contains("edit-custom-text");
     var textEditable = isTextEditable(el);
 
     if (textEditable) {
@@ -201,7 +265,21 @@
       toolbarEl.appendChild(makeToolbarButton("✎", "Editar texto (doble click también sirve)", function () { startTextEdit(el); }));
     }
 
-    if (isImg) {
+    if (isCustomText) {
+      toolbarEl.appendChild(sep());
+      toolbarEl.appendChild(makeToolbarButton("Fuente", "Cambiar fuente", function () {
+        var next = ((parseInt(el.dataset.fontIndex, 10) || 0) + 1) % TEXT_FONTS.length;
+        applyFontToElement(el, next);
+        updateOverride(el, { fontIndex: next });
+      }));
+      toolbarEl.appendChild(makeToolbarButton("Color", "Cambiar color", function () {
+        var next = ((parseInt(el.dataset.colorIndex, 10) || 0) + 1) % TEXT_COLORS.length;
+        applyColorToElement(el, next);
+        updateOverride(el, { colorIndex: next });
+      }));
+    }
+
+    if (isImg || isCustomText) {
       toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar", function () { bumpWidth(el, -20); }));
       toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar", function () { bumpWidth(el, 20); }));
     }
@@ -378,12 +456,45 @@
     });
   }
 
-  // ---------- Imágenes agregadas a mano ----------
+  // ---------- Elementos agregados a mano (imágenes y texto) ----------
 
-  function insertCustomImage(data, skipSave) {
-    var container = data.screen === "envelope"
+  function currentScreen() {
+    var envelopeVisible = document.getElementById("screen-envelope").classList.contains("active");
+    return envelopeVisible ? "envelope" : "invitation";
+  }
+
+  function getContainerForScreen(screen) {
+    return screen === "envelope"
       ? document.getElementById("envelope-frame")
       : document.querySelector("#invitation-frame .s2-card");
+  }
+
+  // Ubica los elementos nuevos justo debajo de lo que ya hay, así aparecen
+  // en el espacio en blanco (el que se gana con "Más espacio abajo") en vez
+  // de tapar algo que ya está puesto.
+  function defaultNewElementPosition(screen) {
+    var container = getContainerForScreen(screen);
+    if (!container) return { left: 100, top: 100 };
+    if (screen === "envelope") {
+      var frameHeight = parseFloat(container.closest(".frame-scaler").dataset.frameHeight) || 2000;
+      return { left: 300, top: frameHeight - 350 };
+    }
+    var scale = getFrameScale(container);
+    var height = container.getBoundingClientRect().height / scale;
+    return { left: 100, top: height + 40 };
+  }
+
+  function insertCustomElement(data, skipSave) {
+    var el = data.type === "text" ? insertCustomText(data) : insertCustomImage(data);
+    if (el && !skipSave) {
+      overrides.customElements.push(data);
+      saveOverrides();
+    }
+    return el;
+  }
+
+  function insertCustomImage(data) {
+    var container = getContainerForScreen(data.screen);
     if (!container) return null;
 
     var img = document.createElement("img");
@@ -398,12 +509,49 @@
 
     container.appendChild(img);
     attachHandlers(img);
-
-    if (!skipSave) {
-      overrides.customElements.push(data);
-      saveOverrides();
-    }
     return img;
+  }
+
+  function insertCustomText(data) {
+    var container = getContainerForScreen(data.screen);
+    if (!container) return null;
+
+    var p = document.createElement("p");
+    p.className = "abs edit-custom edit-custom-text";
+    p.dataset.editCustomId = data.id;
+    p.innerHTML = data.html;
+    p.style.left = data.left + "px";
+    p.style.top = data.top + "px";
+    p.style.width = data.width + "px";
+    p.style.fontSize = data.fontSize + "px";
+    p.style.margin = "0";
+    applyFontToElement(p, data.fontIndex || 0);
+    applyColorToElement(p, data.colorIndex || 0);
+    if (data.hidden) p.style.display = "none";
+
+    container.appendChild(p);
+    attachHandlers(p);
+    return p;
+  }
+
+  function applyFontToElement(el, idx) {
+    var f = TEXT_FONTS[idx % TEXT_FONTS.length];
+    el.style.fontFamily = f.family;
+    el.style.fontWeight = f.weight;
+    el.style.fontStyle = f.style;
+    el.dataset.fontIndex = idx % TEXT_FONTS.length;
+  }
+
+  function applyColorToElement(el, idx) {
+    var c = TEXT_COLORS[idx % TEXT_COLORS.length];
+    el.style.color = c.value;
+    el.dataset.colorIndex = idx % TEXT_COLORS.length;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   function removeCustomElement(el) {
@@ -411,6 +559,7 @@
     overrides.customElements = overrides.customElements.filter(function (item) {
       return item.id !== id;
     });
+    delete overrides.items[id];
     saveOverrides();
     el.remove();
     deselect();
@@ -418,17 +567,39 @@
 
   function addImageFromPicker(filename) {
     customCounter += 1;
-    var envelopeVisible = document.getElementById("screen-envelope").classList.contains("active");
+    var screen = currentScreen();
+    var pos = defaultNewElementPosition(screen);
     var data = {
+      type: "image",
       id: "custom-" + Date.now() + "-" + customCounter,
       src: filename,
-      screen: envelopeVisible ? "envelope" : "invitation",
-      left: 100,
-      top: 100,
+      screen: screen,
+      left: pos.left,
+      top: pos.top,
       width: 200
     };
-    var img = insertCustomImage(data);
+    var img = insertCustomElement(data);
     if (img) selectElement(img);
+  }
+
+  function addCustomText(text, fontIndex, colorIndex) {
+    customCounter += 1;
+    var screen = currentScreen();
+    var pos = defaultNewElementPosition(screen);
+    var data = {
+      type: "text",
+      id: "custom-" + Date.now() + "-" + customCounter,
+      html: escapeHtml(text).replace(/\n/g, "<br>"),
+      screen: screen,
+      left: pos.left,
+      top: pos.top,
+      width: 500,
+      fontSize: 32,
+      fontIndex: fontIndex,
+      colorIndex: colorIndex
+    };
+    var el = insertCustomElement(data);
+    if (el) selectElement(el);
   }
 
   // ---------- Panel de control / export / import ----------
@@ -453,6 +624,9 @@
     panel.style.display = "none";
 
     panel.appendChild(makePanelButton("＋ Agregar imagen", openImagePicker));
+    panel.appendChild(makePanelButton("＋ Agregar texto", openTextAdder));
+    panel.appendChild(makePanelButton("↕＋ Más espacio abajo", function () { bumpFrameHeight(FRAME_HEIGHT_STEP); }));
+    panel.appendChild(makePanelButton("↕－ Menos espacio abajo", function () { bumpFrameHeight(-FRAME_HEIGHT_STEP); }));
     panel.appendChild(makePanelButton("👁 Ver ocultos", openHiddenList));
     panel.appendChild(makePanelButton("⭳ Exportar cambios", openExportModal));
     panel.appendChild(makePanelButton("⭱ Importar cambios", openImportModal));
@@ -529,6 +703,65 @@
         grid.appendChild(btn);
       });
       modal.appendChild(grid);
+    });
+  }
+
+  function openTextAdder() {
+    openModal("Agregar texto", function (modal, close) {
+      var textInput = document.createElement("textarea");
+      textInput.placeholder = "Escribí el texto acá...";
+      textInput.style.height = "80px";
+      modal.appendChild(textInput);
+
+      var fontLabel = document.createElement("label");
+      fontLabel.textContent = "Fuente:";
+      fontLabel.style.display = "block";
+      fontLabel.style.margin = "10px 0 4px";
+      fontLabel.style.fontSize = "13px";
+      modal.appendChild(fontLabel);
+
+      var fontSelect = document.createElement("select");
+      fontSelect.style.width = "100%";
+      fontSelect.style.marginBottom = "8px";
+      TEXT_FONTS.forEach(function (f, i) {
+        var opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = f.label;
+        fontSelect.appendChild(opt);
+      });
+      modal.appendChild(fontSelect);
+
+      var colorLabel = document.createElement("label");
+      colorLabel.textContent = "Color:";
+      colorLabel.style.display = "block";
+      colorLabel.style.margin = "4px 0 4px";
+      colorLabel.style.fontSize = "13px";
+      modal.appendChild(colorLabel);
+
+      var colorSelect = document.createElement("select");
+      colorSelect.style.width = "100%";
+      TEXT_COLORS.forEach(function (c, i) {
+        var opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = c.label;
+        colorSelect.appendChild(opt);
+      });
+      modal.appendChild(colorSelect);
+
+      var actions = document.createElement("div");
+      actions.className = "edit-modal-actions";
+      actions.style.marginTop = "12px";
+      var addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.textContent = "Agregar";
+      addBtn.addEventListener("click", function () {
+        var text = textInput.value.trim();
+        if (!text) { close(); return; }
+        addCustomText(text, parseInt(fontSelect.value, 10), parseInt(colorSelect.value, 10));
+        close();
+      });
+      actions.appendChild(addBtn);
+      modal.appendChild(actions);
     });
   }
 
@@ -670,6 +903,7 @@
   }
 
   function init() {
+    applyFrameHeightOverrides();
     applyStoredOverrides();
     collectEditableElements();
     fabEl = buildFab();
