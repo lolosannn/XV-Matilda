@@ -319,9 +319,15 @@
   function positionToolbar(el) {
     if (!toolbarEl) return;
     var rect = el.getBoundingClientRect();
-    var top = rect.top - 40;
+    var toolbarHeight = toolbarEl.offsetHeight || 36;
+    var maxTop = window.innerHeight - toolbarHeight - 4;
+    var top = rect.top - toolbarHeight - 6;
     if (top < 4) top = rect.bottom + 8;
-    var left = Math.max(4, Math.min(rect.left, window.innerWidth - 220));
+    // Si el elemento seleccionado es más grande que la pantalla (o quedó
+    // scrolleado fuera de vista), la barra igual tiene que quedar siempre
+    // alcanzable: la sujetamos dentro del alto visible.
+    top = Math.max(4, Math.min(top, maxTop));
+    var left = Math.max(4, Math.min(rect.left, window.innerWidth - 240));
     toolbarEl.style.top = top + "px";
     toolbarEl.style.left = left + "px";
   }
@@ -330,7 +336,7 @@
 
   function bumpFontSize(el, delta) {
     var current = parseFloat(window.getComputedStyle(el).fontSize) || 16;
-    var next = Math.max(8, current + delta);
+    var next = Math.max(8, Math.min(220, current + delta));
     el.style.fontSize = next + "px";
     updateOverride(el, { fontSize: next });
     positionToolbar(el);
@@ -345,7 +351,9 @@
 
   function bumpWidth(el, delta) {
     var current = el.getBoundingClientRect().width / getFrameScale(el);
-    var next = Math.max(20, current + delta);
+    // Tope para que no se pueda agrandar tanto que la barra de controles
+    // termine quedando inalcanzable o el elemento tape media pantalla.
+    var next = Math.max(20, Math.min(1800, current + delta));
     el.style.width = next + "px";
     updateOverride(el, { width: next });
     positionToolbar(el);
