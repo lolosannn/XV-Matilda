@@ -108,7 +108,7 @@ body {
 
 .eyebrow {
   left: 50%;
-  top: 496px;
+  top: 506.816px;
   width: 1259px;
   transform: translateX(-50%);
   text-align: center;
@@ -123,7 +123,7 @@ body {
 
 .script-names {
   left: 50%;
-  top: 605px;
+  top: 603.444px;
   width: 1265px;
   transform: translateX(-50%);
   text-align: center;
@@ -387,7 +387,7 @@ body {
   margin: 0;
   text-align: center;
   font-family: "Libre Baskerville", serif;
-  font-size: 32px;
+  font-size: 36px;
   line-height: 1.45;
   color: var(--ink);
 }
@@ -401,21 +401,21 @@ body {
 
 .s2-divider-1 {
   left: 50%;
-  top: 457px;
+  top: 382.985px;
   width: 368px;
   transform: translateX(-50%);
 }
 
 .s2-logo {
   left: 50%;
-  top: 500px;
-  width: 480px;
+  top: 565.719px;
+  width: 580px;
   transform: translateX(-50%);
 }
 
 .s2-photo {
   left: 50%;
-  top: 1000px;
+  top: 1032.88px;
   width: 620px;
   transform: translateX(-50%) rotate(-3deg);
   box-shadow: 0 12px 28px rgba(60, 45, 30, 0.25);
@@ -423,7 +423,7 @@ body {
 
 .s2-names {
   left: 50%;
-  top: 1500px;
+  top: 1578.13px;
   width: 1150px;
   transform: translateX(-50%);
   margin: 0;
@@ -447,14 +447,14 @@ body {
 
 .s2-divider-2 {
   left: 50%;
-  top: 1650px;
+  top: 1736.63px;
   width: 527px;
   transform: translateX(-50%);
 }
 
 .s2-callout {
   left: 50%;
-  top: 1760px;
+  top: 1865.52px;
   width: 940px;
   transform: translateX(-50%);
   margin: 0;
@@ -469,7 +469,7 @@ body {
 
 .s2-divider-3 {
   left: 50%;
-  top: 1930px;
+  top: 2048.91px;
   width: 527px;
   transform: translateX(-50%);
 }
@@ -483,11 +483,13 @@ body {
   width: 100%;
   height: auto;
   background-color: var(--bg-card);
+  position: relative;
+  top: -60.8843px;
 }
 
 .s2-dt-flower {
   left: 50%;
-  top: 2277px;
+  top: 2238.15px;
   width: 140px;
   transform: translateX(-50%);
 }
@@ -525,7 +527,7 @@ body {
 }
 
 .s2-dt-value--fecha {
-  top: 2591px;
+  top: 2586.98px;
 }
 
 .s2-dt-label--horario {
@@ -533,20 +535,20 @@ body {
 }
 
 .s2-dt-value--horario {
-  top: 2771px;
+  top: 2765.97px;
 }
 
 .s2-dt-label--lugar {
-  top: 2901px;
+  top: 2918.18px;
 }
 
 .s2-dt-value--lugar {
-  top: 2931px;
+  top: 2969.79px;
 }
 
 .s2-dt-address {
   left: 50%;
-  top: 3040px;
+  top: 3055.5px;
   width: 900px;
   transform: translateX(-50%);
   margin: 0;
@@ -567,14 +569,14 @@ body {
 
 .s2-map-divider-top {
   left: 50%;
-  top: 3411px;
+  top: 3421.78px;
   width: 809px;
   transform: translateX(-50%);
 }
 
 .s2-map-link {
   left: 50%;
-  top: 3574px;
+  top: 3532.01px;
   width: 638px;
   transform: translateX(-50%);
   display: block;
@@ -605,7 +607,7 @@ body {
 
 .s2-map-divider-bottom {
   left: 50%;
-  top: 4063px;
+  top: 3950.21px;
   width: 809px;
   transform: translateX(-50%);
 }
@@ -615,7 +617,7 @@ body {
    cual lo subieron: se coloca sin agregar nada más encima. */
 .s2-dresscode {
   left: 50%;
-  top: 4474px;
+  top: 4281.51px;
   width: 1184px;
   transform: translateX(-50%);
 }
@@ -625,18 +627,20 @@ body {
   display: block;
   width: 100%;
   height: auto;
+  position: relative;
+  top: -238.012px;
 }
 
 .s2-countdown-overlay {
   left: 50%;
-  top: 5193px;
+  top: 4955.1px;
   width: 831px;
   transform: translateX(-50%);
 }
 
 .s2-countdown-numbers {
   left: 50%;
-  top: 5302px;
+  top: 5088.38px;
   width: 831px;
   height: 90px;
   transform: translateX(-50%);
@@ -699,11 +703,13 @@ body {
   width: 75%;
   height: auto;
   margin: 0 auto;
+  position: relative;
+  top: -112.603px;
 }
 
 .s2-rsvp-button {
   left: 50%;
-  top: 5822px;
+  top: 5705px;
   width: 465px;
   padding: 22px 0;
   transform: translateX(-50%);
@@ -712,8 +718,8 @@ body {
   text-decoration: none;
   text-transform: uppercase;
   font-family: "Libre Baskerville", serif;
-  font-size: 21px;
-  letter-spacing: 1.5px;
+  font-size: 29px;
+  letter-spacing: -0.5px;
   color: #fbf3ec;
   background: #4a3320;
   border-radius: 999px;
@@ -730,8 +736,10 @@ body {
 /* ---------- Pantalla 2: aviso de cierre ---------- */
 .s2-footer-divider {
   display: block;
-  width: 275px;
+  width: 375px;
   margin: 90px auto 0;
+  position: relative;
+  top: -84.3359px;
 }
 
 .s2-footer-note {
@@ -743,6 +751,8 @@ body {
   font-size: 22px;
   line-height: 1.6;
   color: var(--ink-soft);
+  position: relative;
+  top: -46.5851px;
 }
 
 .s2-footer-spacer {
