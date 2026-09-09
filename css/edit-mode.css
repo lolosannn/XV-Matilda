@@ -46,6 +46,26 @@ body.edit-mode-active .edit-target:hover {
   outline-offset: 2px;
 }
 
+.edit-guide {
+  position: fixed;
+  background: #e0455f;
+  z-index: 100002;
+  pointer-events: none;
+  display: none;
+}
+
+.edit-guide-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.edit-guide-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
 .edit-just-added {
   animation: edit-just-added-pulse 0.8s ease-in-out 2;
 }
