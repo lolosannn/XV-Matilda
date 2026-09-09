@@ -734,45 +734,6 @@
     if (img) revealNewElement(img);
   }
 
-  // Achica la foto (lado más largo a maxDim) y la comprime a JPEG antes de
-  // guardarla en localStorage, para no llenar el almacenamiento del
-  // navegador con fotos de celular de varios MB cada una.
-  function resizeImageFile(file, maxDim, callback) {
-    var reader = new FileReader();
-    reader.onload = function () {
-      var img = new Image();
-      img.onload = function () {
-        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-        var w = Math.max(1, Math.round(img.width * scale));
-        var h = Math.max(1, Math.round(img.height * scale));
-        var canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-        callback(canvas.toDataURL("image/jpeg", 0.85));
-      };
-      img.src = String(reader.result);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function addUploadedImage(dataUrl) {
-    customCounter += 1;
-    var screen = currentScreen();
-    var pos = defaultNewElementPosition(screen);
-    var data = {
-      type: "image",
-      id: "custom-" + Date.now() + "-" + customCounter,
-      src: dataUrl,
-      screen: screen,
-      left: pos.left,
-      top: pos.top,
-      width: 300
-    };
-    var img = insertCustomElement(data);
-    if (img) revealNewElement(img);
-  }
-
   function addCustomText(text, fontIndex, colorIndex) {
     customCounter += 1;
     var screen = currentScreen();
@@ -887,34 +848,7 @@
   }
 
   function openImagePicker() {
-    openModal("Agregar imagen", function (modal, close) {
-      var uploadLabel = document.createElement("label");
-      uploadLabel.textContent = "Subir una foto desde tu celular/PC:";
-      uploadLabel.style.display = "block";
-      uploadLabel.style.fontSize = "13px";
-      uploadLabel.style.margin = "0 0 6px";
-      modal.appendChild(uploadLabel);
-
-      var uploadInput = document.createElement("input");
-      uploadInput.type = "file";
-      uploadInput.accept = "image/*";
-      uploadInput.style.marginBottom = "16px";
-      uploadInput.addEventListener("change", function () {
-        var file = uploadInput.files[0];
-        if (!file) return;
-        resizeImageFile(file, 1200, function (dataUrl) {
-          addUploadedImage(dataUrl);
-          close();
-        });
-      });
-      modal.appendChild(uploadInput);
-
-      var galleryLabel = document.createElement("p");
-      galleryLabel.textContent = "…o elegí una de las que ya están en el sitio:";
-      galleryLabel.style.fontSize = "13px";
-      galleryLabel.style.margin = "0 0 8px";
-      modal.appendChild(galleryLabel);
-
+    openModal("Agregar imagen desde /images", function (modal, close) {
       var grid = document.createElement("div");
       grid.className = "edit-picker-grid";
       AVAILABLE_IMAGES.forEach(function (filename) {
