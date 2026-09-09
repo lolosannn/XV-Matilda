@@ -44,8 +44,16 @@
     "screen2-divider-2.png", "screen2-divider-3.png", "screen2-flower.png",
     "screen2-lace-fixed.png", "screen2-logo.png", "screen2-map-divider-bottom.png",
     "screen2-map-divider-top.png", "screen2-map.png", "screen2-photo.gif",
-    "screen2-ribbon.png", "screen2-rsvp-bg.png"
+    "screen2-ribbon.png", "screen2-rsvp-bg.png",
+    "Corona banca pantalla 2.png", "Separador blanco pantalla 2.png",
+    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png"
   ];
+
+  // Nombres de archivo con espacios (como los que suben desde el celular)
+  // necesitan ir codificados en la URL para que el navegador los cargue.
+  function imagePath(filename) {
+    return "images/" + filename.split("/").map(encodeURIComponent).join("/");
+  }
 
   var TEXT_TAGS = ["P", "H1", "H2"];
 
@@ -642,7 +650,7 @@
     // Las fotos subidas desde el dispositivo quedan como data URL (no hay
     // forma de escribir un archivo nuevo en /images sin que yo lo suba al
     // código); las de la galería son un archivo real de esa carpeta.
-    img.src = data.src.indexOf("data:") === 0 ? data.src : "images/" + data.src;
+    img.src = data.src.indexOf("data:") === 0 ? data.src : imagePath(data.src);
     img.alt = "";
     img.className = "abs edit-custom";
     img.dataset.editCustomId = data.id;
@@ -913,7 +921,7 @@
         var btn = document.createElement("button");
         btn.type = "button";
         var img = document.createElement("img");
-        img.src = "images/" + filename;
+        img.src = imagePath(filename);
         img.alt = filename;
         var span = document.createElement("span");
         span.textContent = filename;
