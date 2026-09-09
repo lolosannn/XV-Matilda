@@ -579,7 +579,7 @@
       width: 200
     };
     var img = insertCustomElement(data);
-    if (img) selectElement(img);
+    if (img) revealNewElement(img);
   }
 
   function addCustomText(text, fontIndex, colorIndex) {
@@ -599,7 +599,20 @@
       colorIndex: colorIndex
     };
     var el = insertCustomElement(data);
-    if (el) selectElement(el);
+    if (el) revealNewElement(el);
+  }
+
+  // Los elementos nuevos se ubican debajo de todo lo que ya hay (para no
+  // taparlo), y como la tarjeta es larga eso suele quedar fuera de la
+  // pantalla sin hacer scroll. Sin este auto-scroll parece que "no se
+  // agregó nada".
+  function revealNewElement(el) {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    selectElement(el);
+    el.classList.add("edit-just-added");
+    window.setTimeout(function () {
+      el.classList.remove("edit-just-added");
+    }, 1600);
   }
 
   // ---------- Panel de control / export / import ----------

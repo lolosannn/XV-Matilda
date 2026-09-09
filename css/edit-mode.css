@@ -46,6 +46,15 @@ body.edit-mode-active .edit-target:hover {
   outline-offset: 2px;
 }
 
+.edit-just-added {
+  animation: edit-just-added-pulse 0.8s ease-in-out 2;
+}
+
+@keyframes edit-just-added-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(169, 130, 44, 0); }
+  50% { box-shadow: 0 0 0 10px rgba(169, 130, 44, 0.35); }
+}
+
 .edit-target[contenteditable="true"] {
   cursor: text;
   outline: 2px solid #4a90d9 !important;
