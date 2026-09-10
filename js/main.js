@@ -163,6 +163,11 @@ function openEnvelope() {
   }, 1100);
 }
 
+// Por debajo de este ancho se aplican las medidas más grandes de mobile
+// (ver el bloque @media en style.css). Mismo corte que usa el modo
+// edición para separar los ajustes de "desktop" y "mobile".
+const MOBILE_BREAKPOINT = 760;
+
 // Reproduce cada pantalla al tamaño exacto del diseño de Figma (un "frame" de
 // ancho fijo) y lo escala uniformemente para que ocupe el ancho del dispositivo,
 // igual que si fuera una imagen. Así el layout queda pixel-perfect en cualquier
@@ -171,10 +176,20 @@ function openEnvelope() {
 function scaleFrame(scaler) {
   const frame = scaler.querySelector(".frame");
   const frameWidth = parseFloat(scaler.dataset.frameWidth);
-  const frameHeight = parseFloat(scaler.dataset.frameHeight);
   // El modo edición puede forzar un ancho de pantalla simulado (vista previa
   // mobile desde escritorio); si no, se usa el ancho real del dispositivo.
   const viewportWidth = window.__xvForcedViewportWidth || document.documentElement.clientWidth;
+
+  // En mobile el CSS agranda un 35% el contenido de la tarjeta (texto,
+  // fotos, espaciados), así que la tarjeta necesita más alto real; si no
+  // se avisa acá, el "lienzo" se queda con el alto de desktop y recorta
+  // lo que sobra. data-mobile-frame-height es ese alto ya calculado para
+  // ese +35%.
+  const isMobile = viewportWidth < MOBILE_BREAKPOINT;
+  const mobileFrameHeight = parseFloat(scaler.dataset.mobileFrameHeight);
+  const frameHeight = isMobile && mobileFrameHeight
+    ? mobileFrameHeight
+    : parseFloat(scaler.dataset.frameHeight);
 
   const scale = viewportWidth / frameWidth;
 
@@ -188,6 +203,13 @@ function scaleFrame(scaler) {
 }
 
 function scaleAllFrames() {
+  // La clase "mobile-scale" prende el bloque de CSS con las medidas más
+  // grandes para mobile (ver style.css). Se decide con el mismo ancho
+  // -real o simulado por "Vista mobile" en el modo edición- que usa
+  // scaleFrame, para que la vista previa se vea igual que un celular real.
+  const viewportWidth = window.__xvForcedViewportWidth || document.documentElement.clientWidth;
+  document.body.classList.toggle("mobile-scale", viewportWidth < MOBILE_BREAKPOINT);
+
   document.querySelectorAll(".frame-scaler").forEach(scaleFrame);
 }
 
