@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis XV - Matilda (preview mobile Figma)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/mobile.css?v=1" />
+</head>
+<body>
+  <!-- Página de PREVIEW: copia del diseño de Figma (mobile nativo, 402px de
+       ancho de diseño) para que se vea cómo queda. No reemplaza a
+       index.html ni se linkea desde ningún lado todavía. -->
+  <div id="app">
+    <div id="screen-envelope" class="m-screen m-screen--active">
+      <div class="m-frame" id="m-envelope-frame" data-frame-width="402" data-frame-height="527">
+        <img class="m-bg" src="images/bg-envelope.jpg" alt="" />
+        <img class="m-abs m-crown" src="images/crown-logo.png" alt="" />
+        <h2 class="m-abs m-eyebrow">Invitación para:</h2>
+        <h1 id="m-guest-names-envelope" class="m-abs m-script-names">&nbsp;</h1>
+        <img class="m-abs m-divider" src="images/divider.png" alt="" />
+        <img
+          id="m-envelope"
+          class="m-abs m-envelope-img"
+          src="images/envelope.png"
+          alt="Sobre de invitación"
+          tabindex="0"
+          role="button"
+          aria-label="Abrir invitación"
+        />
+        <p class="m-abs m-hint">toca para abrir</p>
+      </div>
+    </div>
+
+    <div id="screen-invitation" class="m-screen">
+      <div class="m-frame" id="m-invitation-frame" data-frame-width="402" data-frame-height="2585">
+        <img class="m-bg-top" src="images/screen2-bg.jpg" alt="" />
+
+        <div class="m-abs m-card">
+          <img class="m-abs m-card-crown" src="images/crown-logo.png" alt="" />
+
+          <p class="m-abs m-quote">
+            Hay momentos que merecen<br />convertirse en recuerdos.
+            <br /><br /><em>Queremos que seas parte de uno de ellos.</em>
+          </p>
+          <img class="m-abs m-divider-sm" src="images/screen2-divider-1.png" alt="" />
+          <img class="m-abs m-quote-flower" src="images/screen2-flower.png" alt="" />
+
+          <img class="m-abs m-logo" src="images/screen2-logo.png" alt="Matilda mis XV" />
+
+          <h2 id="m-guest-names-invitation" class="m-abs m-names">&nbsp;</h2>
+          <img class="m-abs m-divider-names" src="images/screen2-divider-2.png" alt="" />
+
+          <p class="m-abs m-callout">
+            Estás invitado a celebrar<br />los XV años de <span id="m-celebrant-name">Matilda</span>.
+          </p>
+          <img class="m-abs m-divider-names2" src="images/screen2-divider-3.png" alt="" />
+
+          <img class="m-abs m-dt-bg" src="images/screen2-datetime-bg.png" alt="" />
+          <p class="m-abs m-dt-label m-dt-label--fecha">Fecha</p>
+          <p class="m-abs m-dt-value m-dt-value--fecha" id="m-event-date">31/10/2026</p>
+          <p class="m-abs m-dt-label m-dt-label--horario">Horario</p>
+          <p class="m-abs m-dt-value m-dt-value--horario" id="m-event-time">21hs</p>
+          <p class="m-abs m-dt-label m-dt-label--lugar">Lugar</p>
+          <p class="m-abs m-dt-value m-dt-value--lugar" id="m-event-venue">Villa Victoria</p>
+          <p class="m-abs m-dt-address" id="m-event-address">Av. Avellaneda 323, Bernal</p>
+
+          <img class="m-abs m-map-divider-top" src="images/screen2-map-divider-top.png" alt="" />
+          <a id="m-map-link" class="m-abs m-map-link" href="#" target="_blank" rel="noopener">
+            <img class="m-map-image" src="images/screen2-map.png" alt="Ubicación en el mapa" />
+            <p class="m-map-hint">Tocá el mapa para abrirlo en Google Maps</p>
+          </a>
+          <img class="m-abs m-map-divider-bottom" src="images/screen2-map-divider-bottom.png" alt="" />
+
+          <img class="m-abs m-dresscode" src="images/dresscode.png" alt="Dresscode: elegante. Colores prohibidos: verde, champagne, blanco." />
+
+          <img class="m-abs m-countdown-bg" src="images/screen2-countdown-bg.jpg" alt="" />
+          <img class="m-abs m-countdown-overlay" src="images/screen2-countdown-overlay.png" alt="" />
+          <div class="m-abs m-countdown-numbers" aria-live="polite">
+            <span class="m-countdown-num m-countdown-num--days" id="m-countdown-days">00</span>
+            <span class="m-countdown-colon m-countdown-colon--1" aria-hidden="true">:</span>
+            <span class="m-countdown-num m-countdown-num--hours" id="m-countdown-hours">00</span>
+            <span class="m-countdown-colon m-countdown-colon--2" aria-hidden="true">:</span>
+            <span class="m-countdown-num m-countdown-num--minutes" id="m-countdown-minutes">00</span>
+            <span class="m-countdown-colon m-countdown-colon--3" aria-hidden="true">:</span>
+            <span class="m-countdown-num m-countdown-num--seconds" id="m-countdown-seconds">00</span>
+          </div>
+
+          <p class="m-abs m-rsvp-title">¿Nos acompañas?</p>
+          <a id="m-rsvp-button" class="m-abs m-rsvp-button" href="#" target="_blank" rel="noopener">Confirmar asistencia</a>
+          <p class="m-abs m-rsvp-note">
+            Podes confirmar tu asistencia <strong>hasta el 5 de octubre.</strong>
+          </p>
+
+          <p class="m-abs m-closing-quote">
+            Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas.
+          </p>
+          <p class="m-abs m-closing-gift">
+            Por eso, tu presencia será <strong>mi regalo más especial.</strong> Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño:
+          </p>
+          <p class="m-abs m-closing-alias">
+            <strong>ALIAS: MATU.MISXV</strong><br />
+            A nombre de: Matilda Dominguez<br />
+            Cuenta de Mercado Pago
+          </p>
+          <img class="m-abs m-closing-flower" src="images/screen2-flower.png" alt="" />
+
+          <p class="m-abs m-footer-note">
+            Invitación digital y personal<br />
+            Te pedimos NO reenviarla, ¡cada invitado tiene la suya!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/guests.js?v=1"></script>
+  <script src="js/config.js?v=1"></script>
+  <script src="js/mobile.js?v=1"></script>
+</body>
+</html>
