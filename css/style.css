@@ -695,21 +695,21 @@ body {
   left: 72.62%;
 }
 
-/* ---------- Pantalla 2: RSVP ---------- */
-/* El PNG trae todo el contenido armado (título, textos, flourish) menos
-   el botón, que queda como hueco vacío para armarlo acá con CSS. */
-.s2-rsvp-bg {
+/* ---------- Pantalla 2: cierre (RSVP + alias + aviso final) ---------- */
+/* Imagen única con todo el contenido de cierre armado (fondo transparente,
+   integra con el color de la tarjeta). No trae el botón real de
+   "Confirmar asistencia" (no es clickeable dentro de una imagen), así que
+   ese botón se superpone acá con CSS, en el hueco que deja la imagen
+   entre el título y el texto de confirmación. */
+.s2-closing {
   display: block;
-  width: 75%;
-  height: auto;
-  margin: 0 auto;
-  position: relative;
-  top: -112.603px;
+  width: 940px;
+  margin: 60px auto 0;
 }
 
 .s2-rsvp-button {
   left: 50%;
-  top: 5705px;
+  top: 5797px;
   width: 465px;
   padding: 22px 0;
   transform: translateX(-50%);
@@ -731,28 +731,6 @@ body {
 .s2-rsvp-button:focus-visible {
   background: #5c4128;
   transform: translateX(-50%) translateY(-2px);
-}
-
-/* ---------- Pantalla 2: aviso de cierre ---------- */
-.s2-footer-divider {
-  display: block;
-  width: 375px;
-  margin: 90px auto 0;
-  position: relative;
-  top: -84.3359px;
-}
-
-.s2-footer-note {
-  width: 700px;
-  margin: 28px auto 70px;
-  text-align: center;
-  font-family: "Libre Baskerville", serif;
-  font-style: italic;
-  font-size: 22px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  position: relative;
-  top: -46.5851px;
 }
 
 .s2-footer-spacer {

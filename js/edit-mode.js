@@ -67,7 +67,7 @@
     "s2-dt-label", "s2-dt-label--fecha", "s2-dt-label--horario", "s2-dt-label--lugar",
     "s2-dt-value", "s2-dt-address", "s2-map-divider-top", "s2-map-link",
     "s2-map-divider-bottom", "s2-dresscode", "s2-countdown-bg", "s2-countdown-overlay",
-    "s2-countdown-numbers", "s2-rsvp-bg", "s2-rsvp-button", "s2-footer-divider", "s2-footer-note"
+    "s2-countdown-numbers", "s2-closing", "s2-rsvp-button"
   ];
 
   // Elementos cuyo texto lo arma JS a partir de config.js/guests.js (nombres
@@ -93,7 +93,7 @@
     "screen2-map-divider-top.png", "screen2-map.png", "screen2-photo.gif",
     "screen2-ribbon.png", "screen2-rsvp-bg.png",
     "Corona banca pantalla 2.png", "Separador blanco pantalla 2.png",
-    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png"
+    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png", "Frame 1.png"
   ];
 
   // Nombres de archivo con espacios (como los que suben desde el celular)

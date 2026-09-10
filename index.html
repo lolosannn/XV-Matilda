@@ -10,8 +10,8 @@
     href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=32" />
-  <link rel="stylesheet" href="css/edit-mode.css?v=32" />
+  <link rel="stylesheet" href="css/style.css?v=33" />
+  <link rel="stylesheet" href="css/edit-mode.css?v=33" />
 </head>
 <body>
   <div id="app">
@@ -72,7 +72,7 @@
         class="frame-scaler"
         id="invitation-scaler"
         data-frame-width="1920"
-        data-frame-height="7133"
+        data-frame-height="7685"
       >
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
@@ -160,11 +160,13 @@
               <span class="s2-countdown-num s2-countdown-num--seconds" id="countdown-seconds">00</span>
             </div>
 
-            <!-- RSVP: sigue en flujo normal (no "abs"), como el resto de
-                 los fondos de sección, así estira la tarjeta sola. El PNG
-                 trae todo el contenido armado menos el botón, que se arma
-                 acá con CSS (enlaza a un Google Forms externo). -->
-            <img class="s2-rsvp-bg" src="images/screen2-rsvp-bg.png" alt="" />
+            <!-- Cierre: sigue en flujo normal (no "abs"), estira la tarjeta
+                 sola. Imagen única con todo el contenido de cierre armado
+                 (encabezado, texto de confirmación, frase, alias de
+                 Mercado Pago y aviso de no reenvío). El botón real de
+                 "Confirmar asistencia" no viene en la imagen, así que se
+                 superpone acá con CSS (enlaza a un Google Forms externo). -->
+            <img class="s2-closing" src="images/Frame 1.png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
 
             <a
               id="rsvp-button"
@@ -173,15 +175,6 @@
               target="_blank"
               rel="noopener"
             >Confirmar asistencia</a>
-
-            <!-- Aviso de cierre: sigue en flujo normal, estira la tarjeta.
-                 Reutiliza el divisor simple que ya se usa arriba de todo,
-                 debajo de la cita inicial. -->
-            <img class="s2-footer-divider" src="images/screen2-divider-1.png" alt="" />
-            <p class="s2-footer-note">
-              Invitación digital y personal.<br />
-              Te pedimos NO reenviarla: ¡cada invitado tiene la suya!
-            </p>
 
             <!-- Colchón para que el encaje fijo del final no tape este
                  texto: el encaje queda pegado abajo del viewport, así que
@@ -201,9 +194,9 @@
     </div>
   </div>
 
-  <script src="js/guests.js?v=32"></script>
-  <script src="js/config.js?v=32"></script>
-  <script src="js/main.js?v=32"></script>
-  <script src="js/edit-mode.js?v=32"></script>
+  <script src="js/guests.js?v=33"></script>
+  <script src="js/config.js?v=33"></script>
+  <script src="js/main.js?v=33"></script>
+  <script src="js/edit-mode.js?v=33"></script>
 </body>
 </html>
