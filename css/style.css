@@ -124,7 +124,7 @@ img.abs {
 .s2-bg-middle {
   flex: 1 1 auto;
   min-height: 0;
-  background-image: url("images/segunda%20imagen%20de%20fondo%20pantala%202.png");
+  background-image: url("../images/segunda%20imagen%20de%20fondo%20pantala%202.png");
   background-repeat: repeat-y;
   background-size: 100% auto;
 }
