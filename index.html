@@ -83,13 +83,21 @@
                arriba/abajo a su relación de aspecto real; la del medio
                (lisa, sin adornos en las esquinas) se repite verticalmente
                las veces que hagan falta para llenar exacto lo que quede
-               en el medio. Así funciona igual para desktop (7685px) y
-               mobile (12885px) sin duplicar nada: el flex reparte el alto
-               real del frame, sea cual sea. -->
+               en el medio. El flex reparte el alto real del frame, sea
+               cual sea, así que funciona igual para desktop y mobile.
+               Hay un juego de imágenes distinto para cada uno (mobile
+               más liviano): la inicial/final eligen una u otra con
+               <picture>, la del medio con la media query del CSS. -->
           <div class="s2-bg-wrap">
-            <img class="s2-bg-strip" src="images/primer%20imagen%20de%20fondo%20panatalla%202.jpg" alt="" />
+            <picture>
+              <source media="(max-width: 759.98px)" srcset="images/INICIO%20WEB%20-%20MOBILE.png" />
+              <img class="s2-bg-strip" src="images/INICIO%20WEB%20-%20DESKTOP.png" alt="" />
+            </picture>
             <div class="s2-bg-middle"></div>
-            <img class="s2-bg-strip" src="images/tercer%20imagen%20de%20fondo%20pantalla%202.jpg" alt="" />
+            <picture>
+              <source media="(max-width: 759.98px)" srcset="images/FINAL%20WEB-%20MOBILE.png" />
+              <img class="s2-bg-strip" src="images/FINAL%20WEB-%20DESKTOP.png" alt="" />
+            </picture>
           </div>
 
           <img class="abs s2-ribbon" src="images/screen2-ribbon.png" alt="" />

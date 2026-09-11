@@ -114,17 +114,25 @@ img.abs {
   height: 100%;
 }
 
+/* El elemento realmente "flexeado" es el <picture> (envuelve a la
+   imagen inicial/final para poder elegir mobile o desktop), así que el
+   flex-shrink va ahí; .s2-bg-strip (en el <img> de adentro) solo se
+   ocupa de que la imagen en sí no se estire ni se deforme. */
+.s2-bg-wrap > picture {
+  display: block;
+  flex-shrink: 0;
+}
+
 .s2-bg-strip {
   display: block;
   width: 100%;
   height: auto;
-  flex-shrink: 0;
 }
 
 .s2-bg-middle {
   flex: 1 1 auto;
   min-height: 0;
-  background-image: url("../images/segunda%20imagen%20de%20fondo%20pantala%202.png");
+  background-image: url("../images/MEDIO%20WEB%20-%20DESKTOP.png");
   background-repeat: repeat-y;
   background-size: 100% auto;
 }
@@ -838,6 +846,10 @@ img.abs {
   .script-names,
   .hint {
     width: 1000px;
+  }
+
+  .s2-bg-middle {
+    background-image: url("../images/MEDIO%20WEB%20-%20MOBILE.png");
   }
 
   .s2-ribbon {
