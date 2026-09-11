@@ -592,6 +592,9 @@ img.abs {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  /* Base para que el texto de ayuda de abajo (.s2-map-hint) escale junto
+     con el bloque cuando se agranda/achica desde el editor. */
+  font-size: 20px;
 }
 
 .s2-map-image {
@@ -607,10 +610,10 @@ img.abs {
 }
 
 .s2-map-hint {
-  margin: 8px 0 0;
+  margin: 0.4em 0 0;
   font-family: "Libre Baskerville", serif;
   font-style: italic;
-  font-size: 20px;
+  font-size: 1em;
   color: var(--ink-soft);
 }
 

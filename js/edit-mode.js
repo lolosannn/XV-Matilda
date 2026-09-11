@@ -388,8 +388,9 @@
     }
 
     if (isImg || isCustomText || textResizable || isCountdown || isMapBlock) {
-      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho de la caja", function () { bumpWidth(el, -20); }));
-      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho de la caja", function () { bumpWidth(el, 20); }));
+      var widthFn = isMapBlock ? bumpWidthAndFont : bumpWidth;
+      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho de la caja", function () { widthFn(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho de la caja", function () { widthFn(el, 20); }));
     }
 
     if (isImg || isCountdown) {
@@ -476,6 +477,23 @@
     var next = Math.max(20, Math.min(1800, current + delta));
     el.style.width = next + "px";
     updateOverride(el, { width: next });
+    positionToolbar(el);
+  }
+
+  // Igual que bumpWidth, pero además escala el font-size del bloque en la
+  // misma proporción: el link del mapa trae adentro el texto de ayuda
+  // ("Tocá el mapa..."), que si no se agranda solo con el ancho.
+  function bumpWidthAndFont(el, delta) {
+    var current = el.getBoundingClientRect().width / getFrameScale(el);
+    var next = Math.max(20, Math.min(1800, current + delta));
+    var ratio = next / current;
+
+    var currentFont = parseFloat(window.getComputedStyle(el).fontSize) || 20;
+    var nextFont = Math.max(8, currentFont * ratio);
+
+    el.style.width = next + "px";
+    el.style.fontSize = nextFont + "px";
+    updateOverride(el, { width: next, fontSize: nextFont });
     positionToolbar(el);
   }
 
