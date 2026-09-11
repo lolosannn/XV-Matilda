@@ -168,13 +168,24 @@ function openEnvelope() {
 // igual que si fuera una imagen. Así el layout queda pixel-perfect en cualquier
 // tamaño de pantalla (en mobile se ve el diseño completo, más chico, en vez de
 // un recorte agrandado).
+// Mismo umbral que usa el editor visual (MOBILE_BREAKPOINT en edit-mode.js)
+// para decidir cuándo aplicar los ajustes de mobile.
+const MOBILE_LAYOUT_BREAKPOINT = 760;
+
 function scaleFrame(scaler) {
   const frame = scaler.querySelector(".frame");
   const frameWidth = parseFloat(scaler.dataset.frameWidth);
-  const frameHeight = parseFloat(scaler.dataset.frameHeight);
   // El modo edición puede forzar un ancho de pantalla simulado (vista previa
   // mobile desde escritorio); si no, se usa el ancho real del dispositivo.
   const viewportWidth = window.__xvForcedViewportWidth || document.documentElement.clientWidth;
+  // El diseño mobile reordena y agranda el contenido dentro del mismo
+  // lienzo de 1920px de ancho, así que suele necesitar más alto que el
+  // de desktop (si no, el contenido de más abajo queda recortado por el
+  // overflow:hidden del frame-scaler).
+  const isMobileLayout = viewportWidth < MOBILE_LAYOUT_BREAKPOINT;
+  const frameHeight = parseFloat(
+    (isMobileLayout && scaler.dataset.frameHeightMobile) || scaler.dataset.frameHeight
+  );
 
   const scale = viewportWidth / frameWidth;
 

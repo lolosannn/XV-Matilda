@@ -10,8 +10,8 @@
     href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=41" />
-  <link rel="stylesheet" href="css/edit-mode.css?v=41" />
+  <link rel="stylesheet" href="css/style.css?v=42" />
+  <link rel="stylesheet" href="css/edit-mode.css?v=42" />
 </head>
 <body>
   <div id="app">
@@ -73,6 +73,7 @@
         id="invitation-scaler"
         data-frame-width="1920"
         data-frame-height="7685"
+        data-frame-height-mobile="12885"
       >
         <div class="frame" id="invitation-frame">
           <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
@@ -140,6 +141,13 @@
 
             <img class="abs s2-dresscode" src="images/dresscode.png" alt="Dresscode: elegante. Colores prohibidos: verde, champagne, blanco." />
 
+            <!-- Íconos de traje/vestido junto al dresscode: solo se ven en
+                 mobile (se agregaron desde el editor visual en esa vista;
+                 en desktop no existían overrides para ellos, así que
+                 quedan ocultos ahí). -->
+            <img class="abs s2-mobile-traje" src="images/TRAJE%20PANTALLA%202.png" alt="" />
+            <img class="abs s2-mobile-vestido" src="images/VESTIDO%20PANTALLA%202.png" alt="" />
+
             <!-- Cuenta regresiva: sigue en flujo normal (no "abs") como
                  el fondo de fecha/hora/lugar, así estira la tarjeta sola,
                  sin necesitar otro espaciador. -->
@@ -194,9 +202,9 @@
     </div>
   </div>
 
-  <script src="js/guests.js?v=41"></script>
-  <script src="js/config.js?v=41"></script>
-  <script src="js/main.js?v=41"></script>
-  <script src="js/edit-mode.js?v=41"></script>
+  <script src="js/guests.js?v=42"></script>
+  <script src="js/config.js?v=42"></script>
+  <script src="js/main.js?v=42"></script>
+  <script src="js/edit-mode.js?v=42"></script>
 </body>
 </html>

@@ -765,6 +765,14 @@ img.abs {
   transform: translateX(-50%);
 }
 
+/* Íconos de traje/vestido: solo existen en el diseño mobile (ver media
+   query al final del archivo). En desktop no hay overrides para ellos,
+   así que quedan ocultos. */
+.s2-mobile-traje,
+.s2-mobile-vestido {
+  display: none;
+}
+
 .not-found {
   min-height: 100vh;
   display: flex;
@@ -775,4 +783,207 @@ img.abs {
   padding: 24px;
   font-size: 18px;
   color: var(--ink-soft);
+}
+
+/* ---------- Layout mobile (pantalla 2) ---------- */
+/* Mismo lienzo de diseño de 1920px de ancho que desktop (el escalado a
+   pantalla lo sigue haciendo JS), pero con el contenido reordenado y
+   agrandado para que se lea bien en un celular real. Volcado acá tal
+   cual salió del editor visual en modo "Ver como mobile", exportado y
+   aplicado a mano. Mismo umbral que usa el editor (760px, ver
+   MOBILE_LAYOUT_BREAKPOINT en main.js). */
+@media (max-width: 759.98px) {
+  .s2-ribbon {
+    width: 600px;
+  }
+
+  .s2-flower {
+    left: 1535.51px;
+    top: 235.385px;
+    height: 270.75px;
+  }
+
+  .s2-quote {
+    left: 706.501px;
+    top: 209.464px;
+    width: 1240px;
+    font-size: 72px;
+  }
+
+  .s2-divider-1 {
+    left: 684.01px;
+    top: 510.986px;
+    width: 808px;
+  }
+
+  .s2-logo {
+    left: 660.007px;
+    top: 895.568px;
+    width: 1040px;
+  }
+
+  .s2-photo {
+    left: 705.89px;
+    top: 1923.96px;
+    width: 1095.07px;
+  }
+
+  #guest-names-invitation {
+    left: 695.501px;
+    top: 3025.32px;
+    font-size: 108px;
+  }
+
+  .s2-divider-2 {
+    left: 684.011px;
+    top: 3430.18px;
+    width: 967px;
+  }
+
+  .s2-callout {
+    left: 701.387px;
+    top: 3706.75px;
+    width: 1180px;
+    font-size: 66px;
+  }
+
+  .s2-divider-3 {
+    left: 695.5px;
+    top: 4072.29px;
+    width: 967px;
+  }
+
+  .s2-dt-bg {
+    left: 0.01px;
+    top: 2306.7px;
+    height: 1340px;
+  }
+
+  .s2-dt-flower {
+    left: 725.513px;
+    top: 4581.54px;
+  }
+
+  .s2-dt-label.s2-dt-label--fecha {
+    left: 706.509px;
+    top: 4806.46px;
+    font-size: 62px;
+  }
+
+  #event-date {
+    left: 716.003px;
+    top: 4924.6px;
+    font-size: 140px;
+  }
+
+  .s2-dt-label.s2-dt-label--horario {
+    left: 716.007px;
+    top: 5112.92px;
+    font-size: 58px;
+  }
+
+  #event-time {
+    left: 684.001px;
+    top: 5250.31px;
+    font-size: 168px;
+  }
+
+  .s2-dt-label.s2-dt-label--lugar {
+    left: 684.01px;
+    top: 5478.19px;
+    font-size: 54px;
+  }
+
+  #event-venue {
+    left: 695.498px;
+    top: 5603.64px;
+    font-size: 148px;
+  }
+
+  #event-address {
+    left: 716.004px;
+    top: 5825.08px;
+    font-size: 64px;
+  }
+
+  .s2-map-divider-top {
+    left: 706.514px;
+    top: 6293.47px;
+    width: 1309px;
+  }
+
+  #map-link {
+    left: 709.015px;
+    top: 6471.09px;
+    width: 1138px;
+    font-size: 35.67px;
+  }
+
+  .s2-map-divider-bottom {
+    left: 709px;
+    top: 7204.36px;
+    width: 1309px;
+  }
+
+  .s2-dresscode {
+    left: 725.51px;
+    top: 7901.57px;
+    width: 1760px;
+    height: 653.84px;
+  }
+
+  .s2-mobile-traje {
+    display: block;
+    left: 52.01px;
+    top: 7901.56px;
+    width: 200px;
+  }
+
+  .s2-mobile-vestido {
+    display: block;
+    left: 1051.01px;
+    top: 8130.32px;
+    width: 320px;
+    height: 511.84px;
+  }
+
+  .s2-countdown-bg {
+    left: -107.841px;
+    top: 3448.17px;
+    margin-top: 20px;
+    width: 1800px;
+    height: 738.19px;
+  }
+
+  .s2-countdown-overlay {
+    left: 685.504px;
+    top: 9001.26px;
+    width: 1371px;
+    height: 596px;
+  }
+
+  .s2-countdown-numbers {
+    left: 695.489px;
+    top: 9365.58px;
+    width: 1731px;
+    font-size: 124px;
+  }
+
+  .s2-closing {
+    position: relative;
+    left: -39.01px;
+    top: 3564.31px;
+    width: 1460px;
+  }
+
+  #rsvp-button {
+    left: 684.006px;
+    top: 10030.9px;
+    width: 545px;
+    font-size: 41px;
+  }
+
+  #s2-edit-spacer {
+    height: 5200px;
+  }
 }
