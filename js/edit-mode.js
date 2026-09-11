@@ -93,7 +93,7 @@
     "screen2-map-divider-top.png", "screen2-map.png", "screen2-photo.gif",
     "screen2-ribbon.png", "screen2-rsvp-bg.png",
     "Corona banca pantalla 2.png", "Separador blanco pantalla 2.png",
-    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png", "Frame 1.png", "Frame 1 (3).png",
+    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png", "Frame 1.png", "Frame 1 (3).png", "Frame 2.png",
     "Gemini_Generated_Image_8u8sns8u8sns8u8s.jpg", "Gemini_Generated_Image_mrgo43mrgo43mrgo.png"
   ];
 
