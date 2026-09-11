@@ -74,7 +74,7 @@
         id="invitation-scaler"
         data-frame-width="1920"
         data-frame-height="7685"
-        data-frame-height-mobile="12885"
+        data-frame-height-mobile="13885"
       >
         <div class="frame" id="invitation-frame">
           <!-- Fondo de la pantalla 2 en 3 piezas (en vez de una sola imagen
@@ -188,11 +188,12 @@
                  Mercado Pago y aviso de no reenvío). El botón real de
                  "Confirmar asistencia" no viene en la imagen, así que se
                  superpone acá con CSS (enlaza a un Google Forms externo).
-                 Hay una versión distinta para mobile (más angosta, pensada
-                 para el ancho de la tarjeta ahí): se muestra una u otra
-                 según el ancho de pantalla, ver media query en el CSS. -->
+                 En mobile se oculta (ver media query en el CSS) y se
+                 muestra en su lugar la imagen de abajo, agregada a mano
+                 desde el editor y posicionada como el resto de las
+                 imágenes personalizadas. -->
             <img id="s2-closing-desktop" class="s2-closing" src="images/Frame 1.png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
-            <img id="s2-closing-mobile" class="s2-closing" src="images/Frame%201%20(1).png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
+            <img class="abs s2-closing-custom-mobile" src="images/Frame%201%20(1).png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
 
             <a
               id="rsvp-button"

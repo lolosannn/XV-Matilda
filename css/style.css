@@ -748,9 +748,10 @@ img.abs {
   margin: 60px auto 0;
 }
 
-/* Versión mobile del cierre (más angosta): oculta por defecto, se
-   muestra en vez de la de desktop dentro de la media query mobile. */
-#s2-closing-mobile {
+/* Versión mobile del cierre: agregada a mano desde el editor (como
+   imagen personalizada) en vez de la de desktop. Oculta por defecto, se
+   muestra y posiciona dentro de la media query mobile. */
+.s2-closing-custom-mobile {
   display: none;
 }
 
@@ -994,7 +995,7 @@ img.abs {
   }
 
   .s2-countdown-bg {
-    left: -107.841px;
+    left: -102.92px;
     top: 3448.17px;
     margin-top: 20px;
     width: 1800px;
@@ -1002,42 +1003,40 @@ img.abs {
   }
 
   .s2-countdown-overlay {
-    left: 685.504px;
-    top: 9001.26px;
-    width: 1371px;
-    height: 596px;
+    left: 684px;
+    top: 9052.9px;
+    width: 1551px;
+    height: 576px;
   }
 
   .s2-countdown-numbers {
-    left: 695.489px;
-    top: 9365.58px;
-    width: 1731px;
-    font-size: 124px;
-  }
-
-  .s2-closing {
-    position: relative;
-    left: -39.01px;
-    top: 3564.31px;
-    width: 1460px;
+    left: 705.88px;
+    top: 9419.73px;
+    width: 1691px;
+    height: 30px;
+    font-size: 144px;
   }
 
   #s2-closing-desktop {
     display: none;
   }
 
-  #s2-closing-mobile {
+  .s2-closing-custom-mobile {
     display: block;
+    left: 176.51px;
+    top: 9935.67px;
+    width: 1060px;
+    height: 2747.19px;
   }
 
   #rsvp-button {
-    left: 684.006px;
-    top: 10030.9px;
-    width: 545px;
-    font-size: 41px;
+    left: 695.5px;
+    top: 10222.9px;
+    width: 925px;
+    font-size: 57px;
   }
 
   #s2-edit-spacer {
-    height: 5200px;
+    height: 6200px;
   }
 }
