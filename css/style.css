@@ -83,6 +83,15 @@ body {
   margin: 0;
 }
 
+/* Si se le fija un alto (por ejemplo, desde el editor visual, para
+   "alargar" una foto sin ensancharla), la imagen se recorta para llenar
+   ese alto en vez de estirarse y perder su forma. Sin alto fijo (el caso
+   por defecto) esto no cambia nada: el alto sigue siendo automático. */
+img.abs {
+  object-fit: cover;
+  object-position: center;
+}
+
 .bg-fill {
   position: absolute;
   inset: 0;
@@ -394,8 +403,8 @@ body {
 
 .s2-quote em {
   display: inline-block;
-  margin-top: 14px;
-  font-size: 27px;
+  margin-top: 0.39em;
+  font-size: 0.75em;
   color: var(--ink-soft);
 }
 

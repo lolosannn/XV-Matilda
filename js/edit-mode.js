@@ -205,6 +205,7 @@
     if (data.fontSize != null) el.style.fontSize = data.fontSize + "px";
     if (data.letterSpacing != null) el.style.letterSpacing = data.letterSpacing + "px";
     if (data.width != null) el.style.width = data.width + "px";
+    if (data.height != null) el.style.height = data.height + "px";
     if (data.marginTop != null) el.style.marginTop = data.marginTop + "px";
     if (data.html != null) el.innerHTML = data.html;
     if (data.fontIndex != null) applyFontToElement(el, data.fontIndex);
@@ -360,8 +361,15 @@
     }
 
     if (isImg || isCustomText) {
-      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar", function () { bumpWidth(el, -20); }));
-      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar", function () { bumpWidth(el, 20); }));
+      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho", function () { bumpWidth(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho", function () { bumpWidth(el, 20); }));
+    }
+
+    if (isImg) {
+      // Alto independiente del ancho: la imagen se recorta (no se
+      // deforma) para llenar el nuevo alto, gracias a object-fit:cover.
+      toolbarEl.appendChild(makeToolbarButton("↕−", "Achicar alto (recorta, no deforma)", function () { bumpHeight(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↕+", "Agrandar alto (recorta, no deforma)", function () { bumpHeight(el, 20); }));
     }
 
     if (isFlowImg) {
@@ -436,6 +444,14 @@
     var next = Math.max(20, Math.min(1800, current + delta));
     el.style.width = next + "px";
     updateOverride(el, { width: next });
+    positionToolbar(el);
+  }
+
+  function bumpHeight(el, delta) {
+    var current = el.getBoundingClientRect().height / getFrameScale(el);
+    var next = Math.max(20, Math.min(1800, current + delta));
+    el.style.height = next + "px";
+    updateOverride(el, { height: next });
     positionToolbar(el);
   }
 
