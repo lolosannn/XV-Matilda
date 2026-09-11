@@ -653,6 +653,7 @@ img.abs {
   width: 831px;
   height: 90px;
   transform: translateX(-50%);
+  font-size: 64px;
 }
 
 .s2-countdown-num {
@@ -660,7 +661,7 @@ img.abs {
   top: 50%;
   transform: translate(-50%, -50%);
   font-family: "Pinyon Script", cursive;
-  font-size: 64px;
+  font-size: 1em;
   color: #fff;
   font-weight: 400;
   white-space: nowrap;
@@ -687,7 +688,7 @@ img.abs {
   top: 50%;
   transform: translate(-50%, -55%);
   font-family: "Pinyon Script", cursive;
-  font-size: 64px;
+  font-size: 1em;
   color: #fff;
   font-weight: 400;
 }

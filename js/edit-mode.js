@@ -293,11 +293,23 @@
 
   // ---------- Selección + toolbar flotante ----------
 
-  function isTextEditable(el) {
-    if (NO_TEXT_EDIT_CLASSES.some(function (c) { return el.classList.contains(c); })) return false;
-    if (el.id && DYNAMIC_TEXT_IDS.indexOf(el.id) !== -1) return false;
+  // Tamaño de fuente / espaciado / ancho de caja: válido para cualquier
+  // texto, incluidos los que arma JS (fecha, hora, lugar, nombres...).
+  // Achicar/agrandar esos no tiene ningún problema; lo único riesgoso es
+  // tocar su contenido a mano (ver isTextContentEditable más abajo).
+  function isTextResizable(el) {
     return TEXT_TAGS.indexOf(el.tagName) !== -1 ||
       (el.tagName === "A" && el.classList.contains("s2-rsvp-button"));
+  }
+
+  // Habilitar el botón "✎ Editar texto" / doble click. Se excluyen los
+  // textos que arma JS a partir de config.js/guests.js (fecha, hora,
+  // lugar, nombres, cuenta regresiva): si se les edita el contenido a
+  // mano, se pisa solo con el próximo render o recarga.
+  function isTextContentEditable(el) {
+    if (NO_TEXT_EDIT_CLASSES.some(function (c) { return el.classList.contains(c); })) return false;
+    if (el.id && DYNAMIC_TEXT_IDS.indexOf(el.id) !== -1) return false;
+    return isTextResizable(el);
   }
 
   function selectElement(el) {
@@ -335,13 +347,21 @@
     var isImg = el.tagName === "IMG";
     var isFlowImg = isImg && !el.classList.contains("abs");
     var isCustomText = el.classList.contains("edit-custom-text");
-    var textEditable = isTextEditable(el);
+    var isCountdown = el.classList.contains("s2-countdown-numbers");
+    var textResizable = isTextResizable(el);
+    // El contador (días/horas/min/seg) no es un texto suelto sino un
+    // contenedor con varios números adentro, pero también tiene que poder
+    // agrandarse/achicarse como un bloque.
+    var fontResizable = textResizable || isCountdown;
 
-    if (textEditable) {
+    if (fontResizable) {
       toolbarEl.appendChild(makeToolbarButton("A−", "Achicar texto", function () { bumpFontSize(el, -4); }));
       toolbarEl.appendChild(makeToolbarButton("A+", "Agrandar texto", function () { bumpFontSize(el, 4); }));
       toolbarEl.appendChild(makeToolbarButton("␣−", "Menos espaciado entre letras", function () { bumpLetterSpacing(el, -1); }));
       toolbarEl.appendChild(makeToolbarButton("␣+", "Más espaciado entre letras", function () { bumpLetterSpacing(el, 1); }));
+    }
+
+    if (isTextContentEditable(el)) {
       toolbarEl.appendChild(sep());
       toolbarEl.appendChild(makeToolbarButton("✎", "Editar texto (doble click también sirve)", function () { startTextEdit(el); }));
     }
@@ -360,9 +380,9 @@
       }));
     }
 
-    if (isImg || isCustomText) {
-      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho", function () { bumpWidth(el, -20); }));
-      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho", function () { bumpWidth(el, 20); }));
+    if (isImg || isCustomText || textResizable) {
+      toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho de la caja", function () { bumpWidth(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho de la caja", function () { bumpWidth(el, 20); }));
     }
 
     if (isImg) {
@@ -638,7 +658,7 @@
   function onDblClick(e) {
     if (!state.active) return;
     var el = e.currentTarget;
-    if (!isTextEditable(el)) return;
+    if (!isTextContentEditable(el)) return;
     e.preventDefault();
     e.stopPropagation();
     selectElement(el);
@@ -658,6 +678,15 @@
     }
     el.addEventListener("pointerdown", onPointerDown);
     el.addEventListener("dblclick", onDblClick);
+    // Evita que el botón de RSVP o el link del mapa te saquen de la
+    // página al seleccionarlos en modo edición (el preventDefault del
+    // pointerdown no alcanza para frenar la navegación del link: el click
+    // es un evento aparte).
+    if (el.tagName === "A") {
+      el.addEventListener("click", function (e) {
+        if (state.active) e.preventDefault();
+      });
+    }
   }
 
   function collectEditableElements() {
