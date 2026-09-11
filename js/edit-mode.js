@@ -93,7 +93,7 @@
     "screen2-map-divider-top.png", "screen2-map.png", "screen2-photo.gif",
     "screen2-ribbon.png", "screen2-rsvp-bg.png",
     "Corona banca pantalla 2.png", "Separador blanco pantalla 2.png",
-    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png", "Frame 1.png",
+    "TRAJE PANTALLA 2.png", "VESTIDO PANTALLA 2.png", "Frame 1.png", "Frame 1 (1).png",
     "Gemini_Generated_Image_8u8sns8u8sns8u8s.jpg", "Gemini_Generated_Image_mrgo43mrgo43mrgo.png"
   ];
 
@@ -499,7 +499,10 @@
 
   function bumpHeight(el, delta) {
     var current = el.getBoundingClientRect().height / getFrameScale(el);
-    var next = Math.max(20, Math.min(1800, current + delta));
+    // El tope es mucho más alto que el de bumpWidth: una imagen angosta y
+    // muy larga (como una pieza de cierre pensada para mobile) necesita
+    // bastante más de 1800px de alto de diseño para verse bien.
+    var next = Math.max(20, Math.min(8000, current + delta));
     el.style.height = next + "px";
     updateOverride(el, { height: next });
     positionToolbar(el);
