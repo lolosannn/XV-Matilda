@@ -207,6 +207,7 @@
     if (data.letterSpacing != null) el.style.letterSpacing = data.letterSpacing + "px";
     if (data.width != null) el.style.width = data.width + "px";
     if (data.height != null) el.style.height = data.height + "px";
+    if (data.zIndex != null) el.style.zIndex = data.zIndex;
     if (data.marginTop != null) el.style.marginTop = data.marginTop + "px";
     if (data.html != null) el.innerHTML = data.html;
     if (data.fontIndex != null) applyFontToElement(el, data.fontIndex);
@@ -406,6 +407,10 @@
     }
 
     toolbarEl.appendChild(sep());
+    toolbarEl.appendChild(makeToolbarButton("⤒", "Traer al frente", function () { bringToFront(el); }));
+    toolbarEl.appendChild(makeToolbarButton("⤓", "Mandar al fondo", function () { sendToBack(el); }));
+
+    toolbarEl.appendChild(sep());
     toolbarEl.appendChild(makeToolbarButton("↩", "Restaurar este elemento a como estaba", function () { resetElement(el); }));
 
     var isCustom = el.classList.contains("edit-custom");
@@ -480,6 +485,35 @@
     el.style.height = next + "px";
     updateOverride(el, { height: next });
     positionToolbar(el);
+  }
+
+  // Orden de capas: mira el z-index de todos los elementos editables
+  // visibles ahora mismo y ubica a "el" un paso por encima del que más
+  // adelante está (o por debajo del que más atrás está). Así "traer al
+  // frente"/"mandar al fondo" siempre gana, sin importar cuántas veces
+  // se haya usado antes en otros elementos ni si la página se recargó.
+  function siblingZIndexes(el) {
+    var zs = [];
+    document.querySelectorAll(".edit-target").forEach(function (other) {
+      if (other === el) return;
+      var z = parseFloat(window.getComputedStyle(other).zIndex);
+      zs.push(isNaN(z) ? 0 : z);
+    });
+    return zs;
+  }
+
+  function bringToFront(el) {
+    var zs = siblingZIndexes(el);
+    var next = (zs.length ? Math.max.apply(null, zs) : 0) + 1;
+    el.style.zIndex = next;
+    updateOverride(el, { zIndex: next });
+  }
+
+  function sendToBack(el) {
+    var zs = siblingZIndexes(el);
+    var next = (zs.length ? Math.min.apply(null, zs) : 0) - 1;
+    el.style.zIndex = next;
+    updateOverride(el, { zIndex: next });
   }
 
   function bumpMarginTop(el, delta) {
