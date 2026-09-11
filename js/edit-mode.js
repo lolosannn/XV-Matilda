@@ -348,6 +348,11 @@
     var isFlowImg = isImg && !el.classList.contains("abs");
     var isCustomText = el.classList.contains("edit-custom-text");
     var isCountdown = el.classList.contains("s2-countdown-numbers");
+    // El link del mapa es un <a> que envuelve la imagen + el texto de
+    // ayuda, no una imagen suelta, pero también tiene que poder cambiar
+    // de tamaño como bloque (la imagen adentro es width:100%, así que
+    // sigue el ancho del contenedor sin deformarse).
+    var isMapBlock = el.classList.contains("s2-map-link");
     var textResizable = isTextResizable(el);
     // El contador (días/horas/min/seg) no es un texto suelto sino un
     // contenedor con varios números adentro, pero también tiene que poder
@@ -380,16 +385,17 @@
       }));
     }
 
-    if (isImg || isCustomText || textResizable) {
+    if (isImg || isCustomText || textResizable || isCountdown || isMapBlock) {
       toolbarEl.appendChild(makeToolbarButton("↔−", "Achicar ancho de la caja", function () { bumpWidth(el, -20); }));
       toolbarEl.appendChild(makeToolbarButton("↔+", "Agrandar ancho de la caja", function () { bumpWidth(el, 20); }));
     }
 
-    if (isImg) {
-      // Alto independiente del ancho: la imagen se recorta (no se
-      // deforma) para llenar el nuevo alto, gracias a object-fit:cover.
-      toolbarEl.appendChild(makeToolbarButton("↕−", "Achicar alto (recorta, no deforma)", function () { bumpHeight(el, -20); }));
-      toolbarEl.appendChild(makeToolbarButton("↕+", "Agrandar alto (recorta, no deforma)", function () { bumpHeight(el, 20); }));
+    if (isImg || isCountdown) {
+      // Alto independiente del ancho: en imágenes se recorta (no se
+      // deforma) gracias a object-fit:cover; en la caja del contador solo
+      // mueve el centro vertical de los números.
+      toolbarEl.appendChild(makeToolbarButton("↕−", "Achicar alto", function () { bumpHeight(el, -20); }));
+      toolbarEl.appendChild(makeToolbarButton("↕+", "Agrandar alto", function () { bumpHeight(el, 20); }));
     }
 
     if (isFlowImg) {
