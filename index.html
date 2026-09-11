@@ -10,8 +10,8 @@
     href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=42" />
-  <link rel="stylesheet" href="css/edit-mode.css?v=42" />
+  <link rel="stylesheet" href="css/style.css?v=43" />
+  <link rel="stylesheet" href="css/edit-mode.css?v=43" />
 </head>
 <body>
   <div id="app">
@@ -76,7 +76,20 @@
         data-frame-height-mobile="12885"
       >
         <div class="frame" id="invitation-frame">
-          <img class="bg-fill" src="images/screen2-bg.jpg" alt="" />
+          <!-- Fondo de la pantalla 2 en 3 piezas (en vez de una sola imagen
+               estirada a toda la altura de la tarjeta, que quedaba
+               pixelada/deformada). La primera y la tercera van fijas
+               arriba/abajo a su relación de aspecto real; la del medio
+               (lisa, sin adornos en las esquinas) se repite verticalmente
+               las veces que hagan falta para llenar exacto lo que quede
+               en el medio. Así funciona igual para desktop (7685px) y
+               mobile (12885px) sin duplicar nada: el flex reparte el alto
+               real del frame, sea cual sea. -->
+          <div class="s2-bg-wrap">
+            <img class="s2-bg-strip" src="images/primer%20imagen%20de%20fondo%20panatalla%202.jpg" alt="" />
+            <div class="s2-bg-middle"></div>
+            <img class="s2-bg-strip" src="images/tercer%20imagen%20de%20fondo%20pantalla%202.jpg" alt="" />
+          </div>
 
           <img class="abs s2-ribbon" src="images/screen2-ribbon.png" alt="" />
           <img class="abs s2-flower" src="images/screen2-flower.png" alt="" />
@@ -202,9 +215,9 @@
     </div>
   </div>
 
-  <script src="js/guests.js?v=42"></script>
-  <script src="js/config.js?v=42"></script>
-  <script src="js/main.js?v=42"></script>
-  <script src="js/edit-mode.js?v=42"></script>
+  <script src="js/guests.js?v=43"></script>
+  <script src="js/config.js?v=43"></script>
+  <script src="js/main.js?v=43"></script>
+  <script src="js/edit-mode.js?v=43"></script>
 </body>
 </html>

@@ -101,6 +101,34 @@ img.abs {
   display: block;
 }
 
+/* Fondo de pantalla 2 en 3 piezas (ver comentario en el HTML). El wrap
+   ocupa el alto real del frame (7685px en desktop, 12885px en mobile) y
+   reparte ese espacio entre las dos imágenes fijas de las puntas y la
+   pieza del medio, que se repite vertical las veces que haga falta. */
+.s2-bg-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.s2-bg-strip {
+  display: block;
+  width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.s2-bg-middle {
+  flex: 1 1 auto;
+  min-height: 0;
+  background-image: url("images/segunda%20imagen%20de%20fondo%20pantala%202.png");
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+}
+
 /* ---------- Pantalla 1: sobre ---------- */
 
 #envelope-frame {
