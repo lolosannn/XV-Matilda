@@ -33,20 +33,6 @@ body {
   opacity: 1;
 }
 
-#screen-envelope {
-  /* El fondo de la pantalla 1 ya no vive adentro del "frame" que se
-     escala a la proporción fija de diseño (1920x2513): en celulares más
-     alargados que esa proporción, el frame escalado no llega a cubrir
-     todo el alto real de la pantalla y quedaba un resto liso del fondo
-     de la página (var(--bg)) abajo de todo. Puesto acá como fondo de
-     pantalla completo con cover, siempre tapa el viewport entero, sea
-     cual sea su proporción, sin estirar ni deformar la imagen. */
-  background-image: url("../images/bg-envelope.jpg");
-  background-size: cover;
-  background-position: center;
-  min-height: 100vh;
-}
-
 .screen.hidden {
   display: none;
 }
@@ -841,6 +827,18 @@ img.abs {
    aplicado a mano. Mismo umbral que usa el editor (760px, ver
    MOBILE_LAYOUT_BREAKPOINT en main.js). */
 @media (max-width: 759.98px) {
+  /* ---------- Pantalla 1 (sobre): con el zoom mobile (ver
+     data-zoom-mobile en el HTML y la lógica en main.js), el lienzo se
+     agranda más de lo normal para tapar todo el alto de pantalla, así
+     que se ve bastante menos ancho de lo habitual: estas cajas de texto
+     quedaban más anchas que lo que entra en pantalla y el borde de las
+     palabras se cortaba. Achicadas para que entren enteras. */
+  .eyebrow,
+  .script-names,
+  .hint {
+    width: 1000px;
+  }
+
   .s2-ribbon {
     width: 600px;
   }

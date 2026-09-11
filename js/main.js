@@ -187,11 +187,24 @@ function scaleFrame(scaler) {
     (isMobileLayout && scaler.dataset.frameHeightMobile) || scaler.dataset.frameHeight
   );
 
-  const scale = viewportWidth / frameWidth;
+  // Zoom mobile (data-zoom-mobile="true"): en vez de encajar el frame solo
+  // por ancho (que en celulares mucho más alargados que la proporción del
+  // diseño deja un resto sin cubrir abajo), se escala como un fondo con
+  // "cover": lo que haga falta para tapar TODO el alto real de pantalla
+  // también, agrandando de más el ancho si hace falta (se recorta con el
+  // overflow:hidden del frame-scaler y se recentra con translateX).
+  const zoomMobile = scaler.dataset.zoomMobile === "true" && isMobileLayout;
+  let scale = viewportWidth / frameWidth;
+  if (zoomMobile) {
+    const viewportHeight = window.innerHeight;
+    scale = Math.max(scale, viewportHeight / frameHeight);
+  }
+
+  const offsetX = (viewportWidth - frameWidth * scale) / 2;
 
   frame.style.width = frameWidth + "px";
   frame.style.height = frameHeight + "px";
-  frame.style.transform = "scale(" + scale + ")";
+  frame.style.transform = "translateX(" + offsetX + "px) scale(" + scale + ")";
 
   if (!scaler.classList.contains("frame-scaler--fixed")) {
     scaler.style.height = frameHeight * scale + "px";
