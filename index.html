@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Invitación privada: que no aparezca en buscadores ni se pueda
+       descubrir por fuera de los links personales que se mandan. -->
+  <meta name="robots" content="noindex, nofollow" />
   <title>Mis XV - Matilda</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,8 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/style.css?v=61" />
-  <link rel="stylesheet" href="css/edit-mode.css?v=61" />
+  <link rel="stylesheet" href="css/style.css?v=62" />
 </head>
 <body>
   <div id="app">
@@ -154,7 +156,7 @@
 
             <!-- El mapa lleva a Google Maps con la dirección real (se arma
                  el link en JS, ver renderEventDetails). -->
-            <a id="map-link" class="abs s2-map-link" href="#" target="_blank" rel="noopener">
+            <a id="map-link" class="abs s2-map-link" href="#" target="_blank" rel="noopener noreferrer">
               <img class="s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
               <p class="s2-map-hint">Tocá el mapa para abrirlo en Google Maps</p>
             </a>
@@ -214,7 +216,7 @@
               class="abs s2-rsvp-button"
               href="#"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >Confirmar asistencia</a>
 
             <!-- Colchón para que el encaje fijo del final no tape este
@@ -235,9 +237,8 @@
     </div>
   </div>
 
-  <script src="js/guests.js?v=61"></script>
-  <script src="js/config.js?v=61"></script>
-  <script src="js/main.js?v=61"></script>
-  <script src="js/edit-mode.js?v=61"></script>
+  <script src="js/guests.js?v=62"></script>
+  <script src="js/config.js?v=62"></script>
+  <script src="js/main.js?v=62"></script>
 </body>
 </html>
