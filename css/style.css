@@ -812,7 +812,9 @@ img.abs {
    query al final del archivo). En desktop no hay overrides para ellos,
    así que quedan ocultos. */
 .s2-mobile-traje,
-.s2-mobile-vestido {
+.s2-mobile-vestido,
+.s2-countdown-divider-mobile,
+.s2-countdown-icon-mobile {
   display: none;
 }
 
@@ -1007,26 +1009,39 @@ img.abs {
   }
 
   .s2-countdown-bg {
-    left: -102.92px;
-    top: 3448.17px;
+    left: -270.5px;
+    top: 3519.63px;
     margin-top: 20px;
     width: 1800px;
     height: 738.19px;
   }
 
   .s2-countdown-overlay {
-    left: 684px;
-    top: 9052.9px;
-    width: 1551px;
-    height: 576px;
+    display: none;
+  }
+
+  .s2-countdown-divider-mobile {
+    display: block;
+    left: 44px;
+    top: 9620.96px;
+    width: 1280px;
+    height: 40px;
+  }
+
+  .s2-countdown-icon-mobile {
+    display: block;
+    left: 525.49px;
+    top: 9079.74px;
+    width: 360px;
+    height: 255.89px;
   }
 
   .s2-countdown-numbers {
-    left: 705.88px;
-    top: 9419.73px;
+    left: 695.49px;
+    top: 9459.12px;
     width: 1691px;
     height: 30px;
-    font-size: 144px;
+    font-size: 136px;
   }
 
   #s2-closing-desktop {

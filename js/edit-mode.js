@@ -67,7 +67,8 @@
     "s2-dt-label", "s2-dt-label--fecha", "s2-dt-label--horario", "s2-dt-label--lugar",
     "s2-dt-value", "s2-dt-address", "s2-map-divider-top", "s2-map-link",
     "s2-map-divider-bottom", "s2-dresscode", "s2-countdown-bg", "s2-countdown-overlay",
-    "s2-countdown-numbers", "s2-closing", "s2-closing-custom-mobile", "s2-rsvp-button"
+    "s2-countdown-numbers", "s2-closing", "s2-closing-custom-mobile",
+    "s2-countdown-divider-mobile", "s2-countdown-icon-mobile", "s2-rsvp-button"
   ];
 
   // Elementos cuyo texto lo arma JS a partir de config.js/guests.js (nombres
