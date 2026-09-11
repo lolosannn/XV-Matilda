@@ -762,6 +762,12 @@ img.abs {
   margin: 60px auto 0;
 }
 
+/* Versión mobile del cierre (más angosta): oculta por defecto, se
+   muestra en vez de la de desktop dentro de la media query mobile. */
+#s2-closing-mobile {
+  display: none;
+}
+
 .s2-rsvp-button {
   left: 50%;
   top: 5797px;
@@ -1016,6 +1022,14 @@ img.abs {
     left: -39.01px;
     top: 3564.31px;
     width: 1460px;
+  }
+
+  #s2-closing-desktop {
+    display: none;
+  }
+
+  #s2-closing-mobile {
+    display: block;
   }
 
   #rsvp-button {
