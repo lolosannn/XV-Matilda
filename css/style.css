@@ -1023,10 +1023,9 @@ img.abs {
 
   .s2-closing-custom-mobile {
     display: block;
-    left: 176.51px;
-    top: 9935.67px;
-    width: 1060px;
-    height: 2747.19px;
+    left: 40px;
+    top: 9901.92px;
+    width: 1240px;
   }
 
   #rsvp-button {
@@ -1037,6 +1036,6 @@ img.abs {
   }
 
   #s2-edit-spacer {
-    height: 6200px;
+    height: 7200px;
   }
 }
