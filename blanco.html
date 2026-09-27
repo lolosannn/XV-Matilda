@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Invitación privada: que no aparezca en buscadores ni se pueda
+       descubrir por fuera de los links personales que se mandan. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Mis XV - Matilda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css?v=64" />
+  <!-- Ajustes exclusivos de esta invitación (corona y texto más abajo,
+       ya que acá no hay nombre de invitado debajo). No afecta a
+       style.css ni a ningún otro link. -->
+  <link rel="stylesheet" href="css/blanco.css?v=64" />
+</head>
+<body>
+  <div id="app">
+    <!-- Pantalla 1: sobre cerrado -->
+    <div id="screen-envelope" class="screen active">
+      <div
+        class="frame-scaler"
+        data-frame-width="1920"
+        data-frame-height="2513"
+        data-zoom-mobile="true"
+      >
+        <div class="frame" id="envelope-frame">
+          <img class="bg-fill" src="images/bg-envelope.jpg" alt="" />
+
+          <img class="abs crown-logo" src="images/crown-logo.png" alt="" />
+
+          <h2 class="abs eyebrow">Invitación especial</h2>
+          <h1 id="guest-names-envelope" class="abs script-names">&nbsp;</h1>
+
+          <img class="abs divider-vector" src="images/divider.png" alt="" />
+
+          <div class="abs seal-glow" id="seal-glow"></div>
+
+          <img
+            id="envelope"
+            class="abs envelope-img"
+            src="images/envelope.png"
+            alt="Sobre de invitación"
+            tabindex="0"
+            role="button"
+            aria-label="Abrir invitación"
+          />
+          <p class="abs hint">toca para abrir</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Destello y pétalos de la transición entre pantallas -->
+    <div class="flash-burst" id="flash-burst"></div>
+    <div class="petal-layer" id="petal-layer"></div>
+
+    <!-- Pantalla 2: invitación con detalles del evento -->
+    <div id="screen-invitation" class="screen hidden">
+      <!-- El encaje queda fijo pegado abajo de la pantalla todo el tiempo
+           que estés en la pantalla 2 (no se suelta ni scrollea), para que
+           te acompañe incluso cuando se sume más contenido más abajo. -->
+      <div
+        class="frame-scaler frame-scaler--fixed"
+        id="lace-scaler"
+        data-frame-width="1920"
+        data-frame-height="540"
+      >
+        <div class="frame" id="lace-frame">
+          <img class="abs lace-fixed" src="images/screen2-lace-fixed.png" alt="" />
+        </div>
+      </div>
+
+      <div
+        class="frame-scaler"
+        id="invitation-scaler"
+        data-frame-width="1920"
+        data-frame-height="7685"
+        data-frame-height-mobile="13930"
+      >
+        <div class="frame" id="invitation-frame">
+          <!-- Fondo de la pantalla 2 en 3 piezas (en vez de una sola imagen
+               estirada a toda la altura de la tarjeta, que quedaba
+               pixelada/deformada). La primera y la tercera van fijas
+               arriba/abajo a su relación de aspecto real; la del medio
+               (lisa, sin adornos en las esquinas) se repite verticalmente
+               las veces que hagan falta para llenar exacto lo que quede
+               en el medio. El flex reparte el alto real del frame, sea
+               cual sea, así que funciona igual para desktop y mobile.
+               Hay un juego de imágenes distinto para cada uno (mobile
+               más liviano): la inicial/final eligen una u otra con
+               <picture>, la del medio con la media query del CSS. -->
+          <div class="s2-bg-wrap">
+            <picture>
+              <source media="(max-width: 759.98px)" srcset="images/INICIO%20WEB%20-%20MOBILE.png" />
+              <img class="s2-bg-strip" src="images/INICIO%20WEB%20-%20DESKTOP.png" alt="" />
+            </picture>
+            <div class="s2-bg-middle"></div>
+            <picture>
+              <source media="(max-width: 759.98px)" srcset="images/FINAL%20WEB-%20MOBILE.png" />
+              <img class="s2-bg-strip" src="images/FINAL%20WEB-%20DESKTOP.png" alt="" />
+            </picture>
+          </div>
+
+          <img class="abs s2-ribbon" src="images/screen2-ribbon.png" alt="" />
+          <img class="abs s2-flower" src="images/screen2-flower.png" alt="" />
+
+          <div class="abs s2-card">
+            <div class="s2-card-bg"></div>
+
+            <p class="abs s2-quote">
+              Hay momentos que merecen<br />convertirse en recuerdos.
+              <br /><br /><br /><em>Queremos que seas parte de uno de ellos.</em>
+            </p>
+
+            <img class="abs s2-divider-1" src="images/screen2-divider-1.png" alt="" />
+
+            <img class="abs s2-logo" src="images/screen2-logo.png" alt="Matilda mis XV" />
+
+            <img class="abs s2-photo" src="images/screen2-photo.gif" alt="Matilda" />
+
+            <h2 id="guest-names-invitation" class="abs s2-names">&nbsp;</h2>
+
+            <img class="abs s2-divider-2" src="images/screen2-divider-2.png" alt="" />
+
+            <p class="abs s2-callout">
+              Estás invitado a celebrar<br />los XV años de <span id="celebrant-name">Matilda</span>.
+            </p>
+
+            <img class="abs s2-divider-3" src="images/screen2-divider-3.png" alt="" />
+
+            <!-- Fecha / horario / lugar: sigue el mismo ancho de la tarjeta
+                 en flujo normal (no "abs"), así estira la tarjeta hacia
+                 abajo para hacerle lugar. -->
+            <img class="s2-dt-bg" src="images/screen2-datetime-bg.png" alt="" />
+
+            <img class="abs s2-dt-flower" src="images/screen2-flower.png" alt="" />
+
+            <p class="abs s2-dt-label s2-dt-label--fecha">Fecha</p>
+            <p class="abs s2-dt-value s2-dt-value--fecha" id="event-date">31/10/2026</p>
+
+            <p class="abs s2-dt-label s2-dt-label--horario">Horario</p>
+            <p class="abs s2-dt-value s2-dt-value--horario" id="event-time">21hs</p>
+
+            <p class="abs s2-dt-label s2-dt-label--lugar">Lugar</p>
+            <p class="abs s2-dt-value s2-dt-value--lugar" id="event-venue">Villa Victoria</p>
+
+            <p class="abs s2-dt-address" id="event-address">Av. Avellaneda 323, Bernal</p>
+
+            <!-- Espaciador en flujo normal: estira la tarjeta (que se
+                 mide por su contenido en flujo, no por los "abs") para
+                 hacerle lugar a la sección del mapa de abajo. -->
+            <div class="s2-map-spacer" aria-hidden="true"></div>
+
+            <img class="abs s2-map-divider-top" src="images/screen2-map-divider-top.png" alt="" />
+
+            <!-- El mapa lleva a Google Maps con la dirección real (se arma
+                 el link en JS, ver renderEventDetails). -->
+            <a id="map-link" class="abs s2-map-link" href="#" target="_blank" rel="noopener noreferrer">
+              <img class="s2-map-image" src="images/screen2-map.png" alt="Ubicación de Villa Victoria en el mapa" />
+              <p class="s2-map-hint">Tocá el mapa para abrirlo en Google Maps</p>
+            </a>
+
+            <img class="abs s2-map-divider-bottom" src="images/screen2-map-divider-bottom.png" alt="" />
+
+            <img class="abs s2-dresscode" src="images/dresscode.png" alt="Dresscode: elegante. Colores prohibidos: verde, champagne, blanco." />
+
+            <!-- Íconos de traje/vestido junto al dresscode: solo se ven en
+                 mobile (se agregaron desde el editor visual en esa vista;
+                 en desktop no existían overrides para ellos, así que
+                 quedan ocultos ahí). -->
+            <img class="abs s2-mobile-traje" src="images/TRAJE%20PANTALLA%202.png" alt="" />
+            <img class="abs s2-mobile-vestido" src="images/VESTIDO%20PANTALLA%202.png" alt="" />
+
+            <!-- Cuenta regresiva: sigue en flujo normal (no "abs") como
+                 el fondo de fecha/hora/lugar, así estira la tarjeta sola,
+                 sin necesitar otro espaciador. -->
+            <img class="s2-countdown-bg" src="images/screen2-countdown-bg.jpg" alt="" />
+
+            <img class="abs s2-countdown-overlay" src="images/screen2-countdown-overlay.png" alt="" />
+
+            <!-- Reemplazos del overlay de arriba en mobile (oculto ahí,
+                 ver media query en el CSS): un separador y un ícono
+                 chico agregados a mano desde el editor. -->
+            <img class="abs s2-countdown-divider-mobile" src="images/Separador%20blanco%20pantalla%202.png" alt="" />
+            <img class="abs s2-countdown-icon-mobile" src="images/Frame%202.png" alt="" />
+
+            <!-- Cada número se ubica por separado, centrado arriba de su
+                 etiqueta (DÍAS/HORAS/MINUTOS/SEGUNDOS) de la imagen de
+                 arriba, en vez de un solo texto centrado en bloque. -->
+            <div class="abs s2-countdown-numbers" aria-live="polite">
+              <span class="s2-countdown-num s2-countdown-num--days" id="countdown-days">00</span>
+              <span class="s2-countdown-colon s2-countdown-colon--1" aria-hidden="true">:</span>
+              <span class="s2-countdown-num s2-countdown-num--hours" id="countdown-hours">00</span>
+              <span class="s2-countdown-colon s2-countdown-colon--2" aria-hidden="true">:</span>
+              <span class="s2-countdown-num s2-countdown-num--minutes" id="countdown-minutes">00</span>
+              <span class="s2-countdown-colon s2-countdown-colon--3" aria-hidden="true">:</span>
+              <span class="s2-countdown-num s2-countdown-num--seconds" id="countdown-seconds">00</span>
+            </div>
+
+            <!-- Cierre: sigue en flujo normal (no "abs"), estira la tarjeta
+                 sola. Imagen única con todo el contenido de cierre armado
+                 (encabezado, texto de confirmación, frase, alias de
+                 Mercado Pago y aviso de no reenvío). El botón real de
+                 "Confirmar asistencia" no viene en la imagen, así que se
+                 superpone acá con CSS (enlaza a un Google Forms externo).
+                 En mobile se oculta (ver media query en el CSS) y se
+                 muestra en su lugar la imagen de abajo, agregada a mano
+                 desde el editor y posicionada como el resto de las
+                 imágenes personalizadas. -->
+            <img id="s2-closing-desktop" class="s2-closing" src="images/Frame 1.png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
+            <img class="abs s2-closing-custom-mobile" src="images/Frame%201%20(3).png" alt="¿Nos acompañás? Podés confirmar tu asistencia hasta el 5 de octubre. Hay noches que se vuelven inolvidables por las personas que elegimos para compartirlas. Por eso tu presencia será mi regalo más especial. Y si aun así quisieras regalarme algo más, te dejo mi alias con mucho cariño: ALIAS MATU.MISXV, a nombre de Matilda Dominguez, cuenta de Mercado Pago. Invitación digital y personal, te pedimos no reenviarla, cada invitado tiene la suya." />
+
+            <a
+              id="rsvp-button"
+              class="abs s2-rsvp-button"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Confirmar asistencia</a>
+
+            <!-- Colchón para que el encaje fijo del final no tape este
+                 texto: el encaje queda pegado abajo del viewport, así que
+                 hace falta este margen extra antes de que termine la
+                 tarjeta. -->
+            <div class="s2-footer-spacer" aria-hidden="true"></div>
+
+            <!-- Espaciador vacío que el modo edición estira/achica con
+                 "Más/Menos espacio abajo": al ser un elemento en flujo
+                 (no "abs"), sí hace crecer la tarjeta blanca de verdad,
+                 a diferencia de solo cambiar el alto del "lienzo" de
+                 diseño (que no mueve el borde real de la tarjeta). -->
+            <div class="s2-edit-spacer" id="s2-edit-spacer" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/guests.js?v=64"></script>
+  <script src="js/config.js?v=64"></script>
+  <script src="js/main.js?v=64"></script>
+</body>
+</html>

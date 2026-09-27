@@ -1,0 +1,12 @@
+/* Overrides exclusivos de blanco.html (la invitación sin nombre): baja
+   la corona y el texto "Invitación especial" para ocupar el hueco que
+   deja el nombre del invitado, que en esta página siempre va vacío. No
+   toca ninguna regla de style.css, así que no afecta a los demás links. */
+
+.crown-logo {
+  top: 430px;
+}
+
+.eyebrow {
+  top: 603px;
+}
