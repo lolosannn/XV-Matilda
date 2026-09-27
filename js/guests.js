@@ -91,4 +91,8 @@ const GUEST_GROUPS = [
   { slug: "juli", names: ["Juli"] },
   { slug: "iara", names: ["Iara"] },
   { slug: "santi", names: ["Santi"] },
+  { slug: "diego-alejandra-olivia-renata", names: ["Diego", "Alejandra", "Olivia", "Renata"] },
+  // Invitación genérica sin nombre (para casos sueltos, no ligada a
+  // ningún invitado puntual de la lista).
+  { slug: "blanco", names: [] },
 ];
